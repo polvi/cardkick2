@@ -8,8 +8,8 @@ if ('serviceWorker' in navigator) {
 function initializeProfiles() {
     const profiles = JSON.parse(localStorage.getItem('profiles') || '{}');
     if (Object.keys(profiles).length === 0) {
-        profiles.personal = { name: '', email: '', phone: '' };
-        profiles.business = { name: '', email: '', phone: '' };
+        profiles.personal = { name: '', email: '', phone: '', color: '#f0f0f0' };
+        profiles.business = { name: '', email: '', phone: '', color: '#f0f0f0' };
         localStorage.setItem('profiles', JSON.stringify(profiles));
     }
     return profiles;
@@ -22,6 +22,7 @@ function checkSavedData() {
     const profileData = profiles[currentProfile];
     
     if (profileData.name) {
+        document.body.style.backgroundColor = profileData.color || '#f0f0f0';
         document.getElementById('formSection').style.display = 'none';
         document.getElementById('displaySection').style.display = 'block';
         document.getElementById('displayName').textContent = profileData.name;
@@ -56,6 +57,7 @@ document.getElementById('editButton').addEventListener('click', function() {
     document.getElementById('name').value = profileData.name || '';
     document.getElementById('email').value = profileData.email || '';
     document.getElementById('phone').value = profileData.phone || '';
+    document.getElementById('profileColor').value = profileData.color || '#f0f0f0';
     document.getElementById('formSection').style.display = 'block';
     document.getElementById('displaySection').style.display = 'none';
 });
@@ -74,7 +76,7 @@ document.getElementById('addProfileButton').addEventListener('click', function()
     if (profileName) {
         const profiles = JSON.parse(localStorage.getItem('profiles'));
         if (!profiles[profileName]) {
-            profiles[profileName] = { name: '', email: '', phone: '' };
+            profiles[profileName] = { name: '', email: '', phone: '', color: '#f0f0f0' };
             localStorage.setItem('profiles', JSON.stringify(profiles));
             
             const option = document.createElement('option');
@@ -95,11 +97,12 @@ document.getElementById('vcardForm').addEventListener('submit', function(e) {
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
     const phone = document.getElementById('phone').value;
+    const color = document.getElementById('profileColor').value;
     
     const profiles = JSON.parse(localStorage.getItem('profiles'));
     const currentProfile = document.getElementById('profileSelect').value;
     
-    profiles[currentProfile] = { name, email, phone };
+    profiles[currentProfile] = { name, email, phone, color };
     localStorage.setItem('profiles', JSON.stringify(profiles));
     checkSavedData();
 });
