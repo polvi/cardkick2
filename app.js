@@ -4,16 +4,30 @@ if ('serviceWorker' in navigator) {
         .catch(err => console.log('ServiceWorker registration failed: ', err));
 }
 
+// Initialize profiles if not exists
+function initializeProfiles() {
+    const profiles = JSON.parse(localStorage.getItem('profiles') || '{}');
+    if (Object.keys(profiles).length === 0) {
+        profiles.personal = { name: '', email: '', phone: '' };
+        profiles.business = { name: '', email: '', phone: '' };
+        localStorage.setItem('profiles', JSON.stringify(profiles));
+    }
+    return profiles;
+}
+
 // Check for saved data and show appropriate view
 function checkSavedData() {
-    const savedData = JSON.parse(localStorage.getItem('vcardData') || '{}');
-    if (savedData.name) {
+    const profiles = initializeProfiles();
+    const currentProfile = document.getElementById('profileSelect').value;
+    const profileData = profiles[currentProfile];
+    
+    if (profileData.name) {
         document.getElementById('formSection').style.display = 'none';
         document.getElementById('displaySection').style.display = 'block';
-        document.getElementById('displayName').textContent = savedData.name;
-        document.getElementById('displayEmail').textContent = savedData.email;
-        document.getElementById('displayPhone').textContent = savedData.phone;
-        generateQRCode(savedData);
+        document.getElementById('displayName').textContent = profileData.name;
+        document.getElementById('displayEmail').textContent = profileData.email;
+        document.getElementById('displayPhone').textContent = profileData.phone;
+        generateQRCode(profileData);
     } else {
         document.getElementById('formSection').style.display = 'block';
         document.getElementById('displaySection').style.display = 'none';
@@ -35,16 +49,45 @@ END:VCARD`;
 }
 
 document.getElementById('editButton').addEventListener('click', function() {
-    const savedData = JSON.parse(localStorage.getItem('vcardData') || '{}');
-    document.getElementById('name').value = savedData.name || '';
-    document.getElementById('email').value = savedData.email || '';
-    document.getElementById('phone').value = savedData.phone || '';
+    const profiles = JSON.parse(localStorage.getItem('profiles'));
+    const currentProfile = document.getElementById('profileSelect').value;
+    const profileData = profiles[currentProfile];
+    
+    document.getElementById('name').value = profileData.name || '';
+    document.getElementById('email').value = profileData.email || '';
+    document.getElementById('phone').value = profileData.phone || '';
     document.getElementById('formSection').style.display = 'block';
     document.getElementById('displaySection').style.display = 'none';
 });
 
 // Check for saved data when page loads
 checkSavedData();
+
+// Profile selection change handler
+document.getElementById('profileSelect').addEventListener('change', function() {
+    checkSavedData();
+});
+
+// Add new profile handler
+document.getElementById('addProfileButton').addEventListener('click', function() {
+    const profileName = prompt('Enter new profile name:');
+    if (profileName) {
+        const profiles = JSON.parse(localStorage.getItem('profiles'));
+        if (!profiles[profileName]) {
+            profiles[profileName] = { name: '', email: '', phone: '' };
+            localStorage.setItem('profiles', JSON.stringify(profiles));
+            
+            const option = document.createElement('option');
+            option.value = profileName;
+            option.textContent = profileName;
+            document.getElementById('profileSelect').appendChild(option);
+            document.getElementById('profileSelect').value = profileName;
+            checkSavedData();
+        } else {
+            alert('Profile already exists!');
+        }
+    }
+});
 
 document.getElementById('vcardForm').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -53,7 +96,10 @@ document.getElementById('vcardForm').addEventListener('submit', function(e) {
     const email = document.getElementById('email').value;
     const phone = document.getElementById('phone').value;
     
-    const data = { name, email, phone };
-    localStorage.setItem('vcardData', JSON.stringify(data));
+    const profiles = JSON.parse(localStorage.getItem('profiles'));
+    const currentProfile = document.getElementById('profileSelect').value;
+    
+    profiles[currentProfile] = { name, email, phone };
+    localStorage.setItem('profiles', JSON.stringify(profiles));
     checkSavedData();
 });
