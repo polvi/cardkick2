@@ -1,6 +1,6 @@
 {
-    "name": "VCard QR Generator",
-    "short_name": "VCard QR",
+    "name": "Cardkick",
+    "short_name": "Cardkick",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#ffffff",
