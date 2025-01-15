@@ -52,6 +52,22 @@ button:hover {
     background-color: #45a049;
 }
 
+button.secondary {
+    background-color: #666;
+    margin-top: 10px;
+}
+
+button.secondary:hover {
+    background-color: #555;
+}
+
+.info-display {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f8f8f8;
+    border-radius: 4px;
+}
+
 #qrcode {
     margin-top: 20px;
     text-align: center;

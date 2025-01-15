@@ -11,7 +11,9 @@
 <body>
     <div class="container">
         <h1>VCard QR Generator</h1>
-        <form id="vcardForm">
+        
+        <div id="formSection">
+            <form id="vcardForm">
             <div class="input-group">
                 <label for="name">Name:</label>
                 <input type="text" id="name" required>
@@ -24,9 +26,19 @@
                 <label for="phone">Phone:</label>
                 <input type="tel" id="phone" required>
             </div>
-            <button type="submit">Generate QR Code</button>
-        </form>
-        <div id="qrcode"></div>
+                <button type="submit">Save and Generate QR Code</button>
+            </form>
+        </div>
+
+        <div id="displaySection" style="display: none;">
+            <div class="info-display">
+                <p><strong>Name:</strong> <span id="displayName"></span></p>
+                <p><strong>Email:</strong> <span id="displayEmail"></span></p>
+                <p><strong>Phone:</strong> <span id="displayPhone"></span></p>
+                <button id="editButton" class="secondary">Edit Information</button>
+            </div>
+            <div id="qrcode"></div>
+        </div>
     </div>
     <script src="app.js"></script>
 </body>
