@@ -23,8 +23,8 @@ function checkSavedData() {
     
     if (profileData.name) {
         const color = profileData.color || '#f0f0f0';
-        document.body.style.backgroundColor = color;
-        document.documentElement.style.setProperty('--theme-color', color);
+        document.querySelector('.container').style.backgroundColor = color;
+        document.documentElement.style.setProperty('--theme-color', '#4CAF50');
         document.documentElement.style.setProperty('--theme-color-hover', adjustColor(color, -10));
         document.getElementById('formSection').style.display = 'none';
         document.getElementById('displaySection').style.display = 'block';
