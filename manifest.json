@@ -3,8 +3,8 @@
     "short_name": "Cardkick",
     "start_url": "https://polvi.github.io/cardkick2/",
     "display": "standalone",
-    "background_color": "#ffffff",
-    "theme_color": "#4CAF50",
+    "background_color": "#f0f0f0",
+    "theme_color": "#f0f0f0",
     "icons": [
         {
             "src": "icon-192.png",
