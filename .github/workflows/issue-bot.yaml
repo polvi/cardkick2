@@ -52,7 +52,7 @@ jobs:
           # Stage and commit changes
           git add .
           git commit -m "fix: address issue #${{ github.event.issue.number }}"
-          git push origin $BRANCH_NAME
+          git push --force origin $BRANCH_NAME
           
           # Create PR
           gh pr create \
