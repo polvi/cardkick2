@@ -22,7 +22,10 @@ function checkSavedData() {
     const profileData = profiles[currentProfile];
     
     if (profileData.name) {
-        document.body.style.backgroundColor = profileData.color || '#f0f0f0';
+        const color = profileData.color || '#f0f0f0';
+        document.body.style.backgroundColor = color;
+        document.documentElement.style.setProperty('--theme-color', color);
+        document.documentElement.style.setProperty('--theme-color-hover', adjustColor(color, -10));
         document.getElementById('formSection').style.display = 'none';
         document.getElementById('displaySection').style.display = 'block';
         document.getElementById('displayName').textContent = profileData.name;
@@ -90,6 +93,16 @@ document.getElementById('addProfileButton').addEventListener('click', function()
         }
     }
 });
+
+// Helper function to adjust color brightness
+function adjustColor(color, amount) {
+    const hex = color.replace('#', '');
+    const num = parseInt(hex, 16);
+    const r = Math.min(255, Math.max(0, (num >> 16) + amount));
+    const g = Math.min(255, Math.max(0, ((num >> 8) & 0x00FF) + amount));
+    const b = Math.min(255, Math.max(0, (num & 0x0000FF) + amount));
+    return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+}
 
 document.getElementById('vcardForm').addEventListener('submit', function(e) {
     e.preventDefault();
