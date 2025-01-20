@@ -56,3 +56,22 @@ jobs:
             --body "This PR addresses issue #${{ github.event.issue.number }}" \
             --base main \
             --head $BRANCH_NAME
+            
+      - name: Merge Pull Request
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH_NAME="fix/issue-${{ github.event.issue.number }}"
+          # Wait briefly for PR to be created
+          sleep 5
+          # Get PR number and merge it
+          PR_NUMBER=$(gh pr list --head $BRANCH_NAME --json number -q '.[0].number')
+          gh pr merge $PR_NUMBER --auto --merge
+          
+      - name: Close Issue
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Add thank you comment and close the issue
+          gh issue comment ${{ github.event.issue.number }} --body "Thank you for your issue! The changes have been merged."
+          gh issue close ${{ github.event.issue.number }}
