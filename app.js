@@ -31,7 +31,13 @@ function checkSavedData() {
         document.getElementById('displayName').textContent = profileData.name;
         document.getElementById('displayEmail').textContent = profileData.email;
         document.getElementById('displayPhone').textContent = profileData.phone;
-        document.getElementById('displayLinkedin').textContent = profileData.linkedin || 'Not provided';
+        const linkedinContainer = document.getElementById('linkedinContainer');
+        if (profileData.linkedin) {
+            document.getElementById('displayLinkedin').textContent = profileData.linkedin;
+            linkedinContainer.style.display = 'block';
+        } else {
+            linkedinContainer.style.display = 'none';
+        }
         // Ensure QR code is generated with a small delay to allow for library loading
         setTimeout(() => {
             generateQRCode(profileData);
