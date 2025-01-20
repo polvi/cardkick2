@@ -47,13 +47,14 @@ input {
 
 button {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     background-color: var(--theme-color);
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
+    -webkit-tap-highlight-color: transparent;
 }
 
 button:hover {
@@ -63,9 +64,16 @@ button:hover {
 button.secondary {
     background-color: #666;
     margin-top: 10px;
-    width: auto;
-    padding: 8px 16px;
-    font-size: 14px;
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+}
+
+@media (min-width: 480px) {
+    button.secondary {
+        width: auto;
+        padding: 8px 16px;
+    }
 }
 
 button.secondary:hover {
