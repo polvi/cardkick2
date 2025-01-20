@@ -151,5 +151,15 @@ document.getElementById('vcardForm').addEventListener('submit', function(e) {
     
     profiles[currentProfile] = { name, email, phone, linkedin, color };
     localStorage.setItem('profiles', JSON.stringify(profiles));
+    
+    // Hide SEO content after first save
+    const seoContent = document.getElementById('seoContent');
+    if (seoContent) {
+        seoContent.style.opacity = '0';
+        setTimeout(() => {
+            seoContent.style.display = 'none';
+        }, 300);
+    }
+    
     checkSavedData();
 });
