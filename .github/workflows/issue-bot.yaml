@@ -48,10 +48,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           BRANCH_NAME="fix/issue-${{ github.event.issue.number }}"
-          
-          # Stage and commit changes
-          git add .
-          git commit -m "fix: address issue #${{ github.event.issue.number }}"
           git push --force origin $BRANCH_NAME
           
           # Create PR
