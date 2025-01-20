@@ -1,0 +1,19 @@
+name: Issue Bot
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  print-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Print Issue Details
+        run: |
+          echo "New issue created!"
+          echo "Title: ${{ github.event.issue.title }}"
+          echo "Body: ${{ github.event.issue.body }}"
+          echo "Created by: ${{ github.event.issue.user.login }}"
+          echo "Issue number: ${{ github.event.issue.number }}"
