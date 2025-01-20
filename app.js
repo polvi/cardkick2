@@ -32,7 +32,10 @@ function checkSavedData() {
         document.getElementById('displayEmail').textContent = profileData.email;
         document.getElementById('displayPhone').textContent = profileData.phone;
         document.getElementById('displayLinkedin').textContent = profileData.linkedin || 'Not provided';
-        generateQRCode(profileData);
+        // Ensure QR code is generated with a small delay to allow for library loading
+        setTimeout(() => {
+            generateQRCode(profileData);
+        }, 100);
     } else {
         document.getElementById('formSection').style.display = 'block';
         document.getElementById('displaySection').style.display = 'none';
@@ -40,16 +43,22 @@ function checkSavedData() {
 }
 
 function generateQRCode(data, retryCount = 0) {
+    // Clear any existing error messages
+    document.getElementById('qrcode').innerHTML = '';
+    
     try {
         if (typeof qrcode === 'undefined') {
-            if (retryCount < 3) {
-                console.log('QR code library not loaded, retrying in 500ms...');
-                setTimeout(() => generateQRCode(data, retryCount + 1), 500);
+            if (retryCount < 5) { // Increase retry attempts
+                console.log('QR code library not loaded, retrying in 300ms...');
+                setTimeout(() => generateQRCode(data, retryCount + 1), 300);
                 return;
             }
-            console.error('QR code library failed to load after retries');
-            document.getElementById('qrcode').innerHTML = '<p style="color: red;">Error: QR code generator failed to load. Please refresh the page.</p>';
-            return;
+            throw new Error('QR code library failed to load');
+        }
+
+        // Validate required data
+        if (!data || !data.name || !data.phone || !data.email) {
+            throw new Error('Missing required contact information');
         }
 
         const vcard = `BEGIN:VCARD
@@ -89,7 +98,10 @@ checkSavedData();
 
 // Profile selection change handler
 document.getElementById('profileSelect').addEventListener('change', function() {
-    checkSavedData();
+    // Ensure data is saved before generating QR code
+    setTimeout(() => {
+        checkSavedData();
+    }, 100);
 });
 
 // Edit profile name handler
