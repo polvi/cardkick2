@@ -36,10 +36,18 @@ jobs:
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: |
-          # Create EDITS file from issue
-          echo "Update the code based on this issue:" > EDITS
+          # Create EDITS file from issue and README context
+          echo "Update the code based on this issue, considering the project's README and maintaining its documented features and principles:" > EDITS
           echo "Title: ${{ github.event.issue.title }}" >> EDITS
           echo "Description: ${{ github.event.issue.body }}" >> EDITS
+          echo "" >> EDITS
+          echo "Important context from README:" >> EDITS
+          echo "$(cat README.md)" >> EDITS
+          echo "" >> EDITS
+          echo "Please ensure any changes:" >> EDITS
+          echo "1. Maintain the privacy-first approach (all data stays in browser)" >> EDITS
+          echo "2. Keep PWA functionality intact" >> EDITS
+          echo "3. Update the README if new features are added or existing ones are modified" >> EDITS
           
           # Run aider with the correct parameters
           aider --model openrouter/anthropic/claude-3.5-sonnet --message-file EDITS --yes-always

@@ -50,6 +50,20 @@ To run Cardkick locally:
 2. Open `index.html` in your browser
 3. No build process or dependencies required
 
+## Contributing
+
+Cardkick uses an automated issue handling system:
+
+1. Create a new issue describing the feature request or bug
+2. Our automated system will:
+   - Analyze the issue and README context
+   - Make appropriate code changes
+   - Create and merge a pull request
+   - Update documentation if needed
+   - Close the issue automatically
+
+This automation helps maintain consistent code quality while preserving the project's core principles of privacy and simplicity.
+
 ## Error Tracking
 
 Cardkick uses Sentry for error tracking to help improve stability and user experience. Only technical error information is collected, never your personal data.
