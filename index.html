@@ -26,6 +26,16 @@
             </div>
         </div>
 
+        <div id="displaySection" style="display: none;">
+            <div id="qrcode"></div>
+            <div class="info-display">
+                <p><strong>Name:</strong> <span id="displayName"></span></p>
+                <p><strong>Email:</strong> <span id="displayEmail"></span></p>
+                <p><strong>Phone:</strong> <span id="displayPhone"></span></p>
+                <button id="editButton" class="secondary">Edit Information</button>
+            </div>
+        </div>
+
         <div id="formSection">
             <form id="vcardForm">
             <div class="input-group">
@@ -46,16 +56,6 @@
             </div>
                 <button type="submit">Save and Generate QR Code</button>
             </form>
-        </div>
-
-        <div id="displaySection" style="display: none;">
-            <div id="qrcode"></div>
-            <div class="info-display">
-                <p><strong>Name:</strong> <span id="displayName"></span></p>
-                <p><strong>Email:</strong> <span id="displayEmail"></span></p>
-                <p><strong>Phone:</strong> <span id="displayPhone"></span></p>
-                <button id="editButton" class="secondary">Edit Information</button>
-            </div>
         </div>
     </div>
     <script src="sentry.js"></script>
