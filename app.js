@@ -49,7 +49,7 @@ END:VCARD`;
     const qr = qrcode(0, 'L');
     qr.addData(vcard);
     qr.make();
-    document.getElementById('qrcode').innerHTML = qr.createImgTag(4);
+    document.getElementById('qrcode').innerHTML = qr.createImgTag(6);
 }
 
 document.getElementById('editButton').addEventListener('click', function() {
