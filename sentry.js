@@ -6,6 +6,7 @@ window.sentryOnLoad = function() {
   Sentry.lazyLoadIntegration("feedbackIntegration")
     .then((feedbackIntegration) => {
       Sentry.addIntegration(feedbackIntegration({
+  	autoInject: true
         // User Feedback configuration options
       }));
     })
