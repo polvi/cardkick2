@@ -39,10 +39,15 @@ function checkSavedData() {
     }
 }
 
-function generateQRCode(data) {
+function generateQRCode(data, retryCount = 0) {
     try {
         if (typeof qrcode === 'undefined') {
-            console.error('QR code library not loaded');
+            if (retryCount < 3) {
+                console.log('QR code library not loaded, retrying in 500ms...');
+                setTimeout(() => generateQRCode(data, retryCount + 1), 500);
+                return;
+            }
+            console.error('QR code library failed to load after retries');
             document.getElementById('qrcode').innerHTML = '<p style="color: red;">Error: QR code generator failed to load. Please refresh the page.</p>';
             return;
         }
