@@ -40,7 +40,14 @@ function checkSavedData() {
 }
 
 function generateQRCode(data) {
-    const vcard = `BEGIN:VCARD
+    try {
+        if (typeof qrcode === 'undefined') {
+            console.error('QR code library not loaded');
+            document.getElementById('qrcode').innerHTML = '<p style="color: red;">Error: QR code generator failed to load. Please refresh the page.</p>';
+            return;
+        }
+
+        const vcard = `BEGIN:VCARD
 VERSION:3.0
 FN:${data.name}
 TEL:${data.phone}
@@ -48,10 +55,14 @@ EMAIL:${data.email}
 URL:${data.linkedin}
 END:VCARD`;
     
-    const qr = qrcode(0, 'L');
-    qr.addData(vcard);
-    qr.make();
-    document.getElementById('qrcode').innerHTML = qr.createImgTag(4);
+        const qr = qrcode(0, 'L');
+        qr.addData(vcard);
+        qr.make();
+        document.getElementById('qrcode').innerHTML = qr.createImgTag(4);
+    } catch (error) {
+        console.error('QR code generation failed:', error);
+        document.getElementById('qrcode').innerHTML = '<p style="color: red;">Failed to generate QR code. Please try again.</p>';
+    }
 }
 
 document.getElementById('editButton').addEventListener('click', function() {
