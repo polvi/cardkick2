@@ -76,6 +76,36 @@ document.getElementById('profileSelect').addEventListener('change', function() {
     checkSavedData();
 });
 
+// Edit profile name handler
+document.getElementById('editProfileNameButton').addEventListener('click', function() {
+    const currentProfile = document.getElementById('profileSelect').value;
+    const newName = prompt('Enter new name for profile:', currentProfile);
+    
+    if (newName && newName !== currentProfile) {
+        const profiles = JSON.parse(localStorage.getItem('profiles'));
+        
+        if (profiles[newName]) {
+            alert('A profile with that name already exists!');
+            return;
+        }
+        
+        // Copy profile data to new name
+        profiles[newName] = profiles[currentProfile];
+        // Delete old profile
+        delete profiles[currentProfile];
+        localStorage.setItem('profiles', JSON.stringify(profiles));
+        
+        // Update dropdown
+        const select = document.getElementById('profileSelect');
+        const option = select.querySelector(`option[value="${currentProfile}"]`);
+        option.value = newName;
+        option.textContent = newName;
+        select.value = newName;
+        
+        checkSavedData();
+    }
+});
+
 // Add new profile handler
 document.getElementById('addProfileButton').addEventListener('click', function() {
     const profileName = prompt('Enter new profile name:');
