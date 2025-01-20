@@ -45,6 +45,7 @@ VERSION:3.0
 FN:${data.name}
 TEL:${data.phone}
 EMAIL:${data.email}
+URL:${data.linkedin}
 END:VCARD`;
     
     const qr = qrcode(0, 'L');
