@@ -8,8 +8,8 @@ if ('serviceWorker' in navigator) {
 function initializeProfiles() {
     const profiles = JSON.parse(localStorage.getItem('profiles') || '{}');
     if (Object.keys(profiles).length === 0) {
-        profiles.personal = { name: '', email: '', phone: '', color: '#f0f0f0' };
-        profiles.business = { name: '', email: '', phone: '', color: '#f0f0f0' };
+        profiles.personal = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0' };
+        profiles.business = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0' };
         localStorage.setItem('profiles', JSON.stringify(profiles));
     }
     return profiles;
@@ -31,6 +31,7 @@ function checkSavedData() {
         document.getElementById('displayName').textContent = profileData.name;
         document.getElementById('displayEmail').textContent = profileData.email;
         document.getElementById('displayPhone').textContent = profileData.phone;
+        document.getElementById('displayLinkedin').textContent = profileData.linkedin || 'Not provided';
         generateQRCode(profileData);
     } else {
         document.getElementById('formSection').style.display = 'block';
@@ -44,6 +45,7 @@ VERSION:3.0
 FN:${data.name}
 TEL:${data.phone}
 EMAIL:${data.email}
+URL:${data.linkedin}
 END:VCARD`;
     
     const qr = qrcode(0, 'L');
@@ -60,6 +62,7 @@ document.getElementById('editButton').addEventListener('click', function() {
     document.getElementById('name').value = profileData.name || '';
     document.getElementById('email').value = profileData.email || '';
     document.getElementById('phone').value = profileData.phone || '';
+    document.getElementById('linkedin').value = profileData.linkedin || '';
     document.getElementById('profileColor').value = profileData.color || '#f0f0f0';
     document.getElementById('formSection').style.display = 'block';
     document.getElementById('displaySection').style.display = 'none';
@@ -79,7 +82,7 @@ document.getElementById('addProfileButton').addEventListener('click', function()
     if (profileName) {
         const profiles = JSON.parse(localStorage.getItem('profiles'));
         if (!profiles[profileName]) {
-            profiles[profileName] = { name: '', email: '', phone: '', color: '#f0f0f0' };
+            profiles[profileName] = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0' };
             localStorage.setItem('profiles', JSON.stringify(profiles));
             
             const option = document.createElement('option');
@@ -110,12 +113,13 @@ document.getElementById('vcardForm').addEventListener('submit', function(e) {
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
     const phone = document.getElementById('phone').value;
+    const linkedin = document.getElementById('linkedin').value;
     const color = document.getElementById('profileColor').value;
     
     const profiles = JSON.parse(localStorage.getItem('profiles'));
     const currentProfile = document.getElementById('profileSelect').value;
     
-    profiles[currentProfile] = { name, email, phone, color };
+    profiles[currentProfile] = { name, email, phone, linkedin, color };
     localStorage.setItem('profiles', JSON.stringify(profiles));
     checkSavedData();
 });
