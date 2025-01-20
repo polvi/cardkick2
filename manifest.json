@@ -1,7 +1,7 @@
 {
     "name": "Cardkick",
     "short_name": "Cardkick",
-    "start_url": "/cardkick2/",
+    "start_url": "https://polvi.github.io/cardkick2/",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#4CAF50",

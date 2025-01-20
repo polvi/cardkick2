@@ -1,9 +1,9 @@
 const CACHE_NAME = 'vcard-qr-v1';
 const ASSETS = [
-    '/cardkick2/',
-    '/cardkick2/index.html',
-    '/cardkick2/style.css',
-    '/cardkick2/app.js',
+    'https://polvi.github.io/cardkick2/',
+    'https://polvi.github.io/cardkick2/index.html', 
+    'https://polvi.github.io/cardkick2/style.css',
+    'https://polvi.github.io/cardkick2/app.js',
     'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js'
 ];
 
