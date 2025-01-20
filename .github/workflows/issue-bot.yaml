@@ -50,7 +50,7 @@ jobs:
           echo "3. Update the README if new features are added or existing ones are modified" >> EDITS
           
           # Run aider with the correct parameters
-          aider --model openrouter/anthropic/claude-3.5-sonnet --message-file EDITS --yes-always
+          aider --model openrouter/anthropic/claude-3.5-sonnet --no-detect-urls --message-file EDITS --yes-always
           
       - name: Create Pull Request
         env:
