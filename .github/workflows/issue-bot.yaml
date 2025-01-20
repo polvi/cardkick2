@@ -5,15 +5,58 @@ on:
     types: [opened]
 
 jobs:
-  print-issue:
+  update-code:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v3
       
-      - name: Print Issue Details
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          
+      - name: Install aider
         run: |
-          echo "New issue created!"
-          echo "Title: ${{ github.event.issue.title }}"
-          echo "Body: ${{ github.event.issue.body }}"
-          echo "Created by: ${{ github.event.issue.user.login }}"
-          echo "Issue number: ${{ github.event.issue.number }}"
+          python -m pip install --upgrade pip
+          python -m pip install aider-install
+          aider-install
+          
+      - name: Create branch
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          BRANCH_NAME="fix/issue-${{ github.event.issue.number }}"
+          git checkout -b $BRANCH_NAME
+          
+      - name: Update code with aider
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          # Create EDITS file from issue
+          echo "Update the code based on this issue:" > EDITS
+          echo "Title: ${{ github.event.issue.title }}" >> EDITS
+          echo "Description: ${{ github.event.issue.body }}" >> EDITS
+          
+          # Run aider with the correct parameters
+          aider --model openrouter/anthropic/claude-3.5-sonnet --message-file EDITS --yes-always
+          
+      - name: Create Pull Request
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH_NAME="fix/issue-${{ github.event.issue.number }}"
+          
+          # Stage and commit changes
+          git add .
+          git commit -m "fix: address issue #${{ github.event.issue.number }}"
+          git push origin $BRANCH_NAME
+          
+          # Create PR
+          gh pr create \
+            --title "Fix Issue #${{ github.event.issue.number }}" \
+            --body "This PR addresses issue #${{ github.event.issue.number }}" \
+            --base main \
+            --head $BRANCH_NAME
