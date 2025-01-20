@@ -25,6 +25,8 @@ body {
 h1 {
     text-align: center;
     color: #333;
+    font-family: 'Pacifico', cursive;
+    margin-bottom: 1.5rem;
 }
 
 .seo-content {
