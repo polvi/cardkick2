@@ -6,7 +6,7 @@ if ('serviceWorker' in navigator) {
 
 // Initialize profiles if not exists
 function initializeProfiles() {
-    myUndefinedFunction();
+    myFooFunction();
     const profiles = JSON.parse(localStorage.getItem('profiles') || '{}');
     if (Object.keys(profiles).length === 0) {
         profiles.personal = { name: '', email: '', phone: '', color: '#f0f0f0' };
