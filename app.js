@@ -162,6 +162,40 @@ document.getElementById('vcardForm').addEventListener('submit', function(e) {
     
     profiles[currentProfile] = { name, email, phone, linkedin, color };
     localStorage.setItem('profiles', JSON.stringify(profiles));
+
+    // Update manifest background color
+    const manifestContent = {
+        name: "Cardkick",
+        short_name: "Cardkick", 
+        start_url: "https://polvi.github.io/cardkick2/",
+        display: "standalone",
+        background_color: color,
+        theme_color: color,
+        icons: [
+            {
+                src: "icon-192.png",
+                sizes: "192x192",
+                type: "image/png"
+            },
+            {
+                src: "icon-512.png", 
+                sizes: "512x512",
+                type: "image/png"
+            }
+        ]
+    };
+    
+    const manifestBlob = new Blob([JSON.stringify(manifestContent, null, 2)], {type: 'application/json'});
+    const manifestURL = URL.createObjectURL(manifestBlob);
+    const existingManifest = document.querySelector('link[rel="manifest"]');
+    if (existingManifest) {
+        existingManifest.href = manifestURL;
+    } else {
+        const manifestLink = document.createElement('link');
+        manifestLink.rel = 'manifest';
+        manifestLink.href = manifestURL;
+        document.head.appendChild(manifestLink);
+    }
     
     // Hide SEO content after first save
     const seoContent = document.getElementById('seoContent');
