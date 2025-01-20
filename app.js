@@ -19,9 +19,9 @@ function initializeProfiles() {
 function checkSavedData() {
     const profiles = initializeProfiles();
     const currentProfile = document.getElementById('profileSelect').value;
-    const profileData = profiles[currentProfile];
+    const profileData = profiles[currentProfile] || { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0' };
     
-    if (profileData.name) {
+    if (profileData && profileData.name) {
         const color = profileData.color || '#f0f0f0';
         document.querySelector('.container').style.backgroundColor = color;
         document.documentElement.style.setProperty('--theme-color', '#4CAF50');
@@ -55,9 +55,9 @@ END:VCARD`;
 }
 
 document.getElementById('editButton').addEventListener('click', function() {
-    const profiles = JSON.parse(localStorage.getItem('profiles'));
+    const profiles = JSON.parse(localStorage.getItem('profiles')) || {};
     const currentProfile = document.getElementById('profileSelect').value;
-    const profileData = profiles[currentProfile];
+    const profileData = profiles[currentProfile] || { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0' };
     
     document.getElementById('name').value = profileData.name || '';
     document.getElementById('email').value = profileData.email || '';
