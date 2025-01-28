@@ -1,7 +1,25 @@
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js')
-        .then(registration => console.log('ServiceWorker registered'))
+        .then(registration => {
+            console.log('ServiceWorker registered');
+            // Check if there's an update available
+            registration.update();
+        })
         .catch(err => console.log('ServiceWorker registration failed: ', err));
+}
+
+// Add offline/online event handlers
+window.addEventListener('online', function() {
+    document.body.classList.remove('offline');
+});
+
+window.addEventListener('offline', function() {
+    document.body.classList.add('offline');
+});
+
+// Check initial online status
+if (!navigator.onLine) {
+    document.body.classList.add('offline');
 }
 
 // Initialize profiles if not exists
@@ -54,7 +72,10 @@ function generateQRCode(data, retryCount = 0) {
     
     try {
         if (typeof qrcode === 'undefined') {
-            if (retryCount < 5) { // Increase retry attempts
+            if (!navigator.onLine) {
+                throw new Error('You are offline. Please check your internet connection.');
+            }
+            if (retryCount < 5) {
                 console.log('QR code library not loaded, retrying in 300ms...');
                 setTimeout(() => generateQRCode(data, retryCount + 1), 300);
                 return;
