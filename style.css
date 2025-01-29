@@ -3,11 +3,25 @@
     --theme-color-hover: #45a049;
 }
 
+@keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 10px;
-    background-color: white;
+    background: linear-gradient(
+        -45deg,
+        rgba(255, 240, 245, 0.7),  /* Muted pink */
+        rgba(240, 248, 255, 0.7),  /* Muted blue */
+        rgba(240, 255, 240, 0.7),  /* Muted green */
+        rgba(255, 250, 240, 0.7)   /* Muted yellow */
+    );
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
     -webkit-text-size-adjust: 100%;
 }
 
@@ -20,6 +34,7 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s ease;
     box-sizing: border-box;
+    background-color: rgba(255, 255, 255, 0.9);
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap');
