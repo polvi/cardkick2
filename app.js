@@ -29,6 +29,19 @@ function initializeProfiles() {
         profiles.personal = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0' };
         profiles.business = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0' };
         localStorage.setItem('profiles', JSON.stringify(profiles));
+        
+        // Show intro message for new users
+        const seoContent = document.getElementById('seoContent');
+        if (seoContent) {
+            seoContent.style.display = 'block';
+        }
+    } else {
+        // Check if any profile has data
+        const hasData = Object.values(profiles).some(profile => profile.name || profile.email || profile.phone);
+        const seoContent = document.getElementById('seoContent');
+        if (seoContent) {
+            seoContent.style.display = hasData ? 'none' : 'block';
+        }
     }
     return profiles;
 }
@@ -241,9 +254,9 @@ document.getElementById('vcardForm').addEventListener('submit', function(e) {
         document.head.appendChild(manifestLink);
     }
     
-    // Hide SEO content after first save
+    // Hide SEO content after saving data
     const seoContent = document.getElementById('seoContent');
-    if (seoContent) {
+    if (seoContent && seoContent.style.display !== 'none') {
         seoContent.style.opacity = '0';
         setTimeout(() => {
             seoContent.style.display = 'none';
