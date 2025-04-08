@@ -1,0 +1,21 @@
+Update the code based on this pull request, the original issue, and the full comment thread:
+PR Title: Fix Issue #89
+PR Description: This PR addresses issue #89
+
+Original Issue Title: Update Form Validation Requirements
+Original Issue Description: Modify the form validation so that only the name field is required. All other fields should be made optional.
+
+PR Comment Thread (in chronological order):
+
+Most recent comment: ### <span aria-hidden=true>👷</span> Deploy Preview for *cardkick* processing.
+
+
+|  Name | Link |
+|:-:|------------------------|
+|<span aria-hidden=true>🔨</span> Latest commit | 0cd0bd90887e684b77fb2e438cee470694b68e21 |
+|<span aria-hidden=true>🔍</span> Latest deploy log | https://app.netlify.com/sites/cardkick/deploys/67f57b6b90c56b000892614d |
+
+Please ensure any changes:
+1. Maintain the privacy-first approach (all data stays in browser)
+2. Keep PWA functionality intact
+3. Update the README if new features are added or existing ones are modified
