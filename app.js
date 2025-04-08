@@ -97,17 +97,16 @@ function generateQRCode(data, retryCount = 0) {
         }
 
         // Validate required data
-        if (!data || !data.name || !data.phone || !data.email) {
-            throw new Error('Missing required contact information');
+        if (!data || !data.name) {
+            throw new Error('Name is required for QR code generation');
         }
 
-        const vcard = `BEGIN:VCARD
-VERSION:3.0
-FN:${data.name}
-TEL:${data.phone}
-EMAIL:${data.email}
-URL:${data.linkedin}
-END:VCARD`;
+        // Build vCard with only populated fields
+        let vcard = `BEGIN:VCARD\nVERSION:3.0\nFN:${data.name}\n`;
+        if (data.phone) vcard += `TEL:${data.phone}\n`;
+        if (data.email) vcard += `EMAIL:${data.email}\n`;
+        if (data.linkedin) vcard += `URL:${data.linkedin}\n`;
+        vcard += 'END:VCARD';
     
         const qr = qrcode(0, 'L');
         qr.addData(vcard);
