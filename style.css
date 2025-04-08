@@ -170,10 +170,15 @@ button.secondary:hover {
 }
 
 .profile-emoji {
-    font-size: 4em;
+    font-size: 6em;
     display: block;
     margin: 0 auto 20px;
     text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.profile-emoji:hover {
+    transform: scale(1.1);
 }
 
 #qrcode {
