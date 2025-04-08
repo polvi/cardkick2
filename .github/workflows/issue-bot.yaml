@@ -169,19 +169,31 @@ jobs:
             echo "ISSUE_BODY=Could not determine original issue" >> $GITHUB_OUTPUT
           fi
           
+      - name: Get PR comments
+        id: pr_comments
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER=${{ github.event.issue.number }}
+          # Get all comments from the PR and save to a file
+          gh pr comment list $PR_NUMBER --json author,body,createdAt | jq -r '.[] | "\(.createdAt) - \(.author.login): \(.body)"' > pr_comments.txt
+          
       - name: Update code with aider based on comment
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: |
-          # Create EDITS file from PR context, original issue, and new comment
-          echo "Update the code based on this pull request, the original issue, and the new comment:" > EDITS
+          # Create EDITS file from PR context, original issue, and all comments
+          echo "Update the code based on this pull request, the original issue, and the full comment thread:" > EDITS
           echo "PR Title: ${{ steps.pr_details.outputs.PR_TITLE }}" >> EDITS
           echo "PR Description: ${{ steps.pr_details.outputs.PR_BODY }}" >> EDITS
           echo "" >> EDITS
           echo "Original Issue Title: ${{ steps.issue_details.outputs.ISSUE_TITLE }}" >> EDITS
           echo "Original Issue Description: ${{ steps.issue_details.outputs.ISSUE_BODY }}" >> EDITS
           echo "" >> EDITS
-          echo "New comment: ${{ github.event.comment.body }}" >> EDITS
+          echo "PR Comment Thread (in chronological order):" >> EDITS
+          cat pr_comments.txt >> EDITS
+          echo "" >> EDITS
+          echo "Most recent comment: ${{ github.event.comment.body }}" >> EDITS
           echo "" >> EDITS
           echo "Please ensure any changes:" >> EDITS
           echo "1. Maintain the privacy-first approach (all data stays in browser)" >> EDITS
