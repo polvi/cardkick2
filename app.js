@@ -26,7 +26,7 @@ if (!navigator.onLine) {
 function initializeProfiles() {
     const profiles = JSON.parse(localStorage.getItem('profiles') || '{}');
     if (Object.keys(profiles).length === 0) {
-        profiles.personal = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0', emoji: '💖' };
+        profiles.personal = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0', emoji: '👤' };
         profiles.business = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0', emoji: '💼' };
         localStorage.setItem('profiles', JSON.stringify(profiles));
         
@@ -54,8 +54,7 @@ function checkSavedData() {
     
     if (profileData && profileData.name) {
         const color = profileData.color || '#f0f0f0';
-        document.getElementById('profileEmojiDisplay').textContent = profileData.emoji || '💖';
-        document.getElementById('profileEmojiDisplay').textContent = profileData.emoji || '💖';
+        document.getElementById('profileEmojiDisplay').textContent = profileData.emoji || '👤';
         document.querySelector('.container').style.backgroundColor = color;
         document.documentElement.style.setProperty('--theme-color', '#4CAF50');
         document.documentElement.style.setProperty('--theme-color-hover', adjustColor(color, -10));
@@ -183,7 +182,9 @@ document.getElementById('addProfileButton').addEventListener('click', function()
     if (profileName) {
         const profiles = JSON.parse(localStorage.getItem('profiles'));
         if (!profiles[profileName]) {
-            profiles[profileName] = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0', emoji: '💖' };
+            const profileEmoji = prompt('Choose an emoji for this profile:', '💖');
+            const emoji = profileEmoji || '💖';
+            profiles[profileName] = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0', emoji: emoji };
             localStorage.setItem('profiles', JSON.stringify(profiles));
             
             const option = document.createElement('option');
