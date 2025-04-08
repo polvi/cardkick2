@@ -1,0 +1,26 @@
+Update the code based on this pull request, the original issue, and the full comment thread:
+PR Title: Fix Issue #103
+PR Description: This PR addresses issue #103
+
+Original Issue Title: Introduce URL Field in Profiles
+Original Issue Description: Add a new field to profiles that allows users to share their personal website URL or homepage.
+
+PR Comment Thread (in chronological order):
+
+Most recent comment: ### <span aria-hidden=true>✅</span> Deploy Preview for *cardkick* ready!
+
+
+|  Name | Link |
+|:-:|------------------------|
+|<span aria-hidden=true>🔨</span> Latest commit | 49f114b923702e304e6d580b6611ab8234471df5 |
+|<span aria-hidden=true>🔍</span> Latest deploy log | https://app.netlify.com/sites/cardkick/deploys/67f59e274857490008af641d |
+|<span aria-hidden=true>😎</span> Deploy Preview | [https://deploy-preview-106--cardkick.netlify.app](https://deploy-preview-106--cardkick.netlify.app) |
+|<span aria-hidden=true>📱</span> Preview on mobile | <details><summary> Toggle QR Code... </summary><br /><br />![QR Code](https://app.netlify.com/qr-code/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJodHRwczovL2RlcGxveS1wcmV2aWV3LTEwNi0tY2FyZGtpY2submV0bGlmeS5hcHAifQ.KKeolJDmErIn5TjdCVOi6OmfI2I7i0GipMTQevT2UD0)<br /><br />_Use your smartphone camera to open QR code link._</details> |
+---
+<!-- [cardkick Preview](https://deploy-preview-106--cardkick.netlify.app) -->
+_To edit notification comments on pull requests, go to your [Netlify site configuration](https://app.netlify.com/sites/cardkick/configuration/notifications#deploy-webhooks)._
+
+Please ensure any changes:
+1. Maintain the privacy-first approach (all data stays in browser)
+2. Keep PWA functionality intact
+3. Update the README if new features are added or existing ones are modified
