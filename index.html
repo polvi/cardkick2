@@ -77,34 +77,70 @@
     <script src="sentry.js"></script>
     <script src="app.js"></script>
     <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', async () => {
-                try {
-                    // Unregister any existing service workers first
-                    const registrations = await navigator.serviceWorker.getRegistrations();
-                    for (let registration of registrations) {
-                        await registration.unregister();
-                    }
-                    
-                    // Register new service worker with current origin-relative path
-                    const registration = await navigator.serviceWorker.register('./sw.js', {
-                        scope: window.location.pathname,
-                        updateViaCache: 'none'
-                    });
-                    console.log('ServiceWorker registration successful for:', window.location.origin);
-                } catch (err) {
-                    console.error('ServiceWorker registration failed:', err);
-                    // Report to Sentry with additional context
-                    if (typeof Sentry !== 'undefined') {
-                        Sentry.withScope(scope => {
-                            scope.setExtra('swSupported', 'serviceWorker' in navigator);
-                            scope.setExtra('isSecureContext', window.isSecureContext);
-                            Sentry.captureException(err);
-                        });
-                    }
+        async function registerServiceWorker(retryCount = 0) {
+            const MAX_RETRIES = 3;
+            const BACKOFF_MS = 1000 * Math.pow(2, retryCount);
+            
+            if (!('serviceWorker' in navigator)) {
+                console.warn('ServiceWorker not supported');
+                return;
+            }
+
+            if (!window.isSecureContext) {
+                console.warn('ServiceWorker requires secure context (HTTPS or localhost)');
+                return;
+            }
+
+            try {
+                // Wait for any existing service workers to become ready
+                if (navigator.serviceWorker.controller) {
+                    await navigator.serviceWorker.ready;
                 }
-            });
+
+                // Clean up existing registrations
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                await Promise.all(registrations.map(reg => reg.unregister()));
+
+                // Determine correct scope based on deployment path
+                const scope = new URL('./', window.location.href).pathname;
+                
+                // Register new service worker
+                const registration = await navigator.serviceWorker.register('./sw.js', {
+                    scope: scope,
+                    updateViaCache: 'none'
+                });
+
+                // Verify registration was successful
+                if (!registration.active && !registration.installing && !registration.waiting) {
+                    throw new Error('ServiceWorker registration resulted in invalid state');
+                }
+
+                console.log('ServiceWorker registration successful for:', scope);
+                
+            } catch (err) {
+                console.error('ServiceWorker registration failed:', err);
+
+                if (typeof Sentry !== 'undefined') {
+                    Sentry.withScope(scope => {
+                        scope.setExtra('swSupported', 'serviceWorker' in navigator);
+                        scope.setExtra('isSecureContext', window.isSecureContext);
+                        scope.setExtra('retryCount', retryCount);
+                        scope.setExtra('pathname', window.location.pathname);
+                        scope.setExtra('href', window.location.href);
+                        scope.setExtra('origin', window.location.origin);
+                        Sentry.captureException(err);
+                    });
+                }
+
+                // Retry with exponential backoff
+                if (retryCount < MAX_RETRIES) {
+                    console.log(`Retrying ServiceWorker registration in ${BACKOFF_MS}ms...`);
+                    setTimeout(() => registerServiceWorker(retryCount + 1), BACKOFF_MS);
+                }
+            }
         }
+
+        window.addEventListener('load', () => registerServiceWorker());
     </script>
 </body>
 </html>
