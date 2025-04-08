@@ -145,14 +145,40 @@ jobs:
           git fetch origin
           git checkout ${{ steps.pr_details.outputs.BRANCH_NAME }}
           
+      - name: Get original issue number
+        id: issue_number
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Extract issue number from PR body (assumes PR body contains "#<issue_number>")
+          ISSUE_NUMBER=$(echo "${{ steps.pr_details.outputs.PR_BODY }}" | grep -o '#[0-9]\+' | head -1 | tr -d '#')
+          echo "ISSUE_NUMBER=$ISSUE_NUMBER" >> $GITHUB_OUTPUT
+          
+      - name: Get original issue details
+        id: issue_details
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [[ -n "${{ steps.issue_number.outputs.ISSUE_NUMBER }}" ]]; then
+            ISSUE_DATA=$(gh issue view ${{ steps.issue_number.outputs.ISSUE_NUMBER }} --json title,body)
+            echo "ISSUE_TITLE=$(echo "$ISSUE_DATA" | jq -r '.title')" >> $GITHUB_OUTPUT
+            echo "ISSUE_BODY=$(echo "$ISSUE_DATA" | jq -r '.body')" >> $GITHUB_OUTPUT
+          else
+            echo "ISSUE_TITLE=Unknown" >> $GITHUB_OUTPUT
+            echo "ISSUE_BODY=Could not determine original issue" >> $GITHUB_OUTPUT
+          fi
+          
       - name: Update code with aider based on comment
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: |
-          # Create EDITS file from PR context and new comment
-          echo "Update the code based on this pull request and the new comment:" > EDITS
+          # Create EDITS file from PR context, original issue, and new comment
+          echo "Update the code based on this pull request, the original issue, and the new comment:" > EDITS
           echo "PR Title: ${{ steps.pr_details.outputs.PR_TITLE }}" >> EDITS
           echo "PR Description: ${{ steps.pr_details.outputs.PR_BODY }}" >> EDITS
+          echo "" >> EDITS
+          echo "Original Issue Title: ${{ steps.issue_details.outputs.ISSUE_TITLE }}" >> EDITS
+          echo "Original Issue Description: ${{ steps.issue_details.outputs.ISSUE_BODY }}" >> EDITS
           echo "" >> EDITS
           echo "New comment: ${{ github.event.comment.body }}" >> EDITS
           echo "" >> EDITS
