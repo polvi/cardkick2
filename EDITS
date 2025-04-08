@@ -1,0 +1,19 @@
+Update the code based on this pull request, the original issue, and the new comment:
+PR Title: Fix Issue #87
+PR Description: This PR addresses issue #87
+
+Original Issue Title: Add per profile emoji selection feature
+Original Issue Description: Implement a feature that allows users to select an emoji for their profile. The selected emoji should replace the large emoji displayed above the QR code when the profile is selected.
+
+New comment: ### <span aria-hidden=true>👷</span> Deploy Preview for *cardkick* processing.
+
+
+|  Name | Link |
+|:-:|------------------------|
+|<span aria-hidden=true>🔨</span> Latest commit | 34ec099268d9cdc7653176ec2c91b13af9e7c184 |
+|<span aria-hidden=true>🔍</span> Latest deploy log | https://app.netlify.com/sites/cardkick/deploys/67f57555fd8c91000880c04d |
+
+Please ensure any changes:
+1. Maintain the privacy-first approach (all data stays in browser)
+2. Keep PWA functionality intact
+3. Update the README if new features are added or existing ones are modified
