@@ -110,6 +110,36 @@ button:hover {
     background-color: var(--theme-color-hover);
 }
 
+button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+button.processing {
+    background-color: var(--theme-color-hover);
+    position: relative;
+}
+
+button.processing::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: translateY(-50%) rotate(360deg);
+    }
+}
+
 button.secondary {
     background-color: #666;
     margin-top: 10px;

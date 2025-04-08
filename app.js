@@ -205,10 +205,16 @@ function adjustColor(color, amount) {
     return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 }
 
-document.getElementById('vcardForm').addEventListener('submit', function(e) {
+document.getElementById('vcardForm').addEventListener('submit', debounce(async function(e) {
     e.preventDefault();
     
-    const name = document.getElementById('name').value;
+    const submitButton = document.getElementById('submitButton');
+    submitButton.disabled = true;
+    submitButton.classList.add('processing');
+    submitButton.textContent = 'Saving...';
+    
+    try {
+        const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
     const phone = document.getElementById('phone').value;
     const linkedin = document.getElementById('linkedin').value;
@@ -263,5 +269,15 @@ document.getElementById('vcardForm').addEventListener('submit', function(e) {
         }, 300);
     }
     
-    checkSavedData();
-});
+        checkSavedData();
+    } catch (error) {
+        console.error('Form submission error:', error);
+        if (typeof Sentry !== 'undefined') {
+            Sentry.captureException(error);
+        }
+    } finally {
+        submitButton.disabled = false;
+        submitButton.classList.remove('processing');
+        submitButton.textContent = 'Save and Generate QR Code';
+    }
+}, 500));
