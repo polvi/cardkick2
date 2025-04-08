@@ -62,12 +62,21 @@ function checkSavedData() {
         document.getElementById('displayName').textContent = profileData.name;
         document.getElementById('displayEmail').textContent = profileData.email;
         document.getElementById('displayPhone').textContent = profileData.phone;
+        
         const linkedinContainer = document.getElementById('linkedinContainer');
         if (profileData.linkedin) {
             document.getElementById('displayLinkedin').textContent = profileData.linkedin;
             linkedinContainer.style.display = 'block';
         } else {
             linkedinContainer.style.display = 'none';
+        }
+        
+        const websiteContainer = document.getElementById('websiteContainer');
+        if (profileData.website) {
+            document.getElementById('displayWebsite').textContent = profileData.website;
+            websiteContainer.style.display = 'block';
+        } else {
+            websiteContainer.style.display = 'none';
         }
         
         const websiteContainer = document.getElementById('websiteContainer');
