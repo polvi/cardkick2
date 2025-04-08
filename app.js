@@ -26,8 +26,8 @@ if (!navigator.onLine) {
 function initializeProfiles() {
     const profiles = JSON.parse(localStorage.getItem('profiles') || '{}');
     if (Object.keys(profiles).length === 0) {
-        profiles.personal = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0' };
-        profiles.business = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0' };
+        profiles.personal = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0', emoji: '🦄' };
+        profiles.business = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0', emoji: '💼' };
         localStorage.setItem('profiles', JSON.stringify(profiles));
         
         // Show intro message for new users
@@ -50,7 +50,7 @@ function initializeProfiles() {
 function checkSavedData() {
     const profiles = initializeProfiles();
     const currentProfile = document.getElementById('profileSelect').value;
-    const profileData = profiles[currentProfile] || { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0' };
+    const profileData = profiles[currentProfile] || { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0', emoji: '🦄' };
     
     if (profileData && profileData.name) {
         const color = profileData.color || '#f0f0f0';
@@ -59,6 +59,7 @@ function checkSavedData() {
         document.documentElement.style.setProperty('--theme-color-hover', adjustColor(color, -10));
         document.getElementById('formSection').style.display = 'none';
         document.getElementById('displaySection').style.display = 'block';
+        document.getElementById('displayEmoji').textContent = profileData.emoji || '🦄';
         document.getElementById('displayName').textContent = profileData.name;
         document.getElementById('displayEmail').textContent = profileData.email;
         document.getElementById('displayPhone').textContent = profileData.phone;
@@ -124,6 +125,7 @@ document.getElementById('editButton').addEventListener('click', function() {
     const currentProfile = document.getElementById('profileSelect').value;
     const profileData = profiles[currentProfile] || { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0' };
     
+    document.getElementById('profileEmoji').value = profileData.emoji || '🦄';
     document.getElementById('name').value = profileData.name || '';
     document.getElementById('email').value = profileData.email || '';
     document.getElementById('phone').value = profileData.phone || '';
@@ -180,7 +182,7 @@ document.getElementById('addProfileButton').addEventListener('click', function()
     if (profileName) {
         const profiles = JSON.parse(localStorage.getItem('profiles'));
         if (!profiles[profileName]) {
-            profiles[profileName] = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0' };
+            profiles[profileName] = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0', emoji: '🦄' };
             localStorage.setItem('profiles', JSON.stringify(profiles));
             
             const option = document.createElement('option');
@@ -213,11 +215,12 @@ document.getElementById('vcardForm').addEventListener('submit', function(e) {
     const phone = document.getElementById('phone').value;
     const linkedin = document.getElementById('linkedin').value;
     const color = document.getElementById('profileColor').value;
+    const emoji = document.getElementById('profileEmoji').value || '🦄';
     
     const profiles = JSON.parse(localStorage.getItem('profiles'));
     const currentProfile = document.getElementById('profileSelect').value;
     
-    profiles[currentProfile] = { name, email, phone, linkedin, color };
+    profiles[currentProfile] = { name, email, phone, linkedin, color, emoji };
     localStorage.setItem('profiles', JSON.stringify(profiles));
 
     // Update manifest background color
