@@ -5,13 +5,22 @@ PR Description: This PR addresses issue #87
 Original Issue Title: Add per profile emoji selection feature
 Original Issue Description: Implement a feature that allows users to select an emoji for their profile. The selected emoji should replace the large emoji displayed above the QR code when the profile is selected.
 
-New comment: ### <span aria-hidden=true>👷</span> Deploy Preview for *cardkick* processing.
+New comment: it's missing the ability to select the emoji when you create the profile
+<details><summary>Browser metadata</summary>
 
 
-|  Name | Link |
-|:-:|------------------------|
-|<span aria-hidden=true>🔨</span> Latest commit | 34ec099268d9cdc7653176ec2c91b13af9e7c184 |
-|<span aria-hidden=true>🔍</span> Latest deploy log | https://app.netlify.com/sites/cardkick/deploys/67f57555fd8c91000880c04d |
+
+
+
+
+
+[Open in BrowserStack](https://www.browserstack.com/user/try-live?url=https%3A%2F%2Fdeploy-preview-88--cardkick.netlify.app%2F&os=OS%20X&os_version=Catalina&browser=Firefox&browser_version=136.0&resolution=1264x762&speed=1&start=true&ref=netlify-source)
+
+
+
+</details>
+
+[Open Deploy Preview](https://deploy-preview-88--cardkick.netlify.app/) · [Mark as Resolved](https://app.netlify.com/cdp/resolve?deployID=67f57555fd8c91000880c04d&commentID=67f5759af75ff433ca60cfd4&resolution=resolved)
 
 Please ensure any changes:
 1. Maintain the privacy-first approach (all data stays in browser)
