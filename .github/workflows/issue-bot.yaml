@@ -66,7 +66,21 @@ jobs:
             --base main \
             --head $BRANCH_NAME
             
+      - name: Check for transcript-generated tag
+        id: check_tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Check if issue has transcript-generated tag
+          TAGS=$(gh issue view ${{ github.event.issue.number }} --json labels -q '.labels[].name')
+          if echo "$TAGS" | grep -q "transcript-generated"; then
+            echo "has_transcript_tag=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_transcript_tag=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Merge Pull Request
+        if: steps.check_tag.outputs.has_transcript_tag != 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -82,5 +96,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Add thank you comment and close the issue
-          gh issue comment ${{ github.event.issue.number }} --body "Thank you for your issue! The changes have been merged."
-          gh issue close ${{ github.event.issue.number }}
+          if [[ "${{ steps.check_tag.outputs.has_transcript_tag }}" == "true" ]]; then
+            gh issue comment ${{ github.event.issue.number }} --body "Thank you for your issue! A pull request has been created but requires manual review."
+          else
+            gh issue comment ${{ github.event.issue.number }} --body "Thank you for your issue! The changes have been merged."
+            gh issue close ${{ github.event.issue.number }}
+          fi
