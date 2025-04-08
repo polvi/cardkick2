@@ -28,7 +28,7 @@ function initializeProfiles() {
     if (Object.keys(profiles).length === 0) {
         profiles.personal = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0', emoji: '👤' };
         profiles.business = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0', emoji: '💼' };
-        document.getElementById('profileEmojiDisplay').textContent = '👤';
+        document.getElementById('profileEmojiDisplay').textContent = profiles.personal.emoji;
         localStorage.setItem('profiles', JSON.stringify(profiles));
         
         // Show intro message for new users
@@ -240,7 +240,7 @@ document.getElementById('vcardForm').addEventListener('submit', debounce(async f
         const phone = document.getElementById('phone').value.trim();
         const linkedin = document.getElementById('linkedin').value.trim();
         const color = document.getElementById('profileColor').value;
-        const emoji = document.getElementById('profileEmoji').value.trim() || '💖';
+        const emoji = document.getElementById('profileEmoji').value.trim() || '👤';
     
     const profiles = JSON.parse(localStorage.getItem('profiles'));
     const currentProfile = document.getElementById('profileSelect').value;

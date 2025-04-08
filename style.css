@@ -98,8 +98,23 @@ input#profileEmoji {
     font-size: 24px;
     text-align: center;
     width: 80px;
-    padding: 4px;
+    padding: 8px;
     cursor: pointer;
+    background-color: transparent;
+}
+
+input#profileEmoji:focus {
+    outline: 2px solid var(--theme-color);
+}
+
+#profileEmojiDisplay {
+    transition: transform 0.3s ease;
+    cursor: pointer;
+    user-select: none;
+}
+
+#profileEmojiDisplay:hover {
+    transform: scale(1.1);
 }
 
 button {
@@ -235,4 +250,10 @@ button.secondary:hover {
     background: #ffebee;
     border-radius: 4px;
     margin: 10px 0;
+}
+.helper-text {
+    display: block;
+    font-size: 0.8em;
+    color: #666;
+    margin-top: 4px;
 }
