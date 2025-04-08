@@ -7,9 +7,24 @@ Original Issue Description: Implement a feature that allows users to select an e
 
 PR Comment Thread (in chronological order):
 
-Most recent comment: A new user left a comment. This user must be approved by a Netlify team owner before comments can be displayed.
+Most recent comment: ![screenshot](https://netlify-cocoon.netlify.app/.netlify/functions/fetch?code=307&path=eyJzaXRlX2lkIjoiMDk4ZDIyYTQtYWU4ZS00ZTZjLWExZWEtZjcwMTVhNGM1MjVlIiwiZGVwbG95X2lkIjoiNjdmNTc4NmE3NjBjNmQwMDA4ZDQyMmMyIiwiaWQiOiIzNjQ2NDcxYS04NTI0LTQwMTMtOTNlYS1iY2RiNzJmNDMzMDYifQ==)
 
-[Approve this user](https://app.netlify.com/teams/polvi/reviewers)
+
+<details><summary>Browser metadata</summary>
+
+
+
+
+
+
+
+[Open in BrowserStack](https://www.browserstack.com/user/try-live?url=https%3A%2F%2Fdeploy-preview-88--cardkick.netlify.app%2F&os=OS%20X&os_version=Catalina&browser=Safari&browser_version=18.0&resolution=1470x816&speed=1&start=true&ref=netlify-source)
+
+
+
+</details>
+
+[Open Deploy Preview](https://deploy-preview-88--cardkick.netlify.app/) · [Mark as Resolved](https://app.netlify.com/cdp/resolve?deployID=67f5786a760c6d0008d422c2&commentID=67f58f79936fa15c5802b004&resolution=resolved)
 
 Please ensure any changes:
 1. Maintain the privacy-first approach (all data stays in browser)
