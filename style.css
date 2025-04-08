@@ -212,3 +212,34 @@ button.secondary:hover {
     margin: 0 auto;
     display: block;
 }
+
+.contact-cards {
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+}
+
+.contact-card {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+}
+
+.contact-card h4 {
+    margin: 0 0 5px 0;
+}
+
+.contact-card p {
+    margin: 3px 0;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.contact-card button {
+    margin: 5px 5px 5px 0;
+    padding: 5px 10px;
+    font-size: 0.8em;
+}
