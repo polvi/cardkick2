@@ -22,7 +22,7 @@
         </div>
         <h1>Cardkick 🦄</h1>
         <div style="display: flex; justify-content: center; align-items: center; gap: 20px; margin: 10px auto;">
-            <span style="font-size: 100px;" role="img" aria-label="Sparkling Heart">💖</span>
+            <span id="profileEmojiDisplay" style="font-size: 100px;" role="img" aria-label="Profile Emoji">💖</span>
         </div>
 
         <div id="formSection">
@@ -46,6 +46,10 @@
             <div class="input-group">
                 <label for="profileColor">Profile Color:</label>
                 <input type="color" id="profileColor" value="#f0f0f0">
+            </div>
+            <div class="input-group">
+                <label for="profileEmoji">Profile Emoji:</label>
+                <input type="text" id="profileEmoji" placeholder="💖" maxlength="2">
             </div>
                 <button type="submit" id="submitButton">Save and Generate QR Code</button>
             </form>

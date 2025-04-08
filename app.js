@@ -55,6 +55,7 @@ function checkSavedData() {
     if (profileData && profileData.name) {
         const color = profileData.color || '#f0f0f0';
         document.getElementById('profileEmojiDisplay').textContent = profileData.emoji || '💖';
+        document.getElementById('profileEmojiDisplay').textContent = profileData.emoji || '💖';
         document.querySelector('.container').style.backgroundColor = color;
         document.documentElement.style.setProperty('--theme-color', '#4CAF50');
         document.documentElement.style.setProperty('--theme-color-hover', adjustColor(color, -10));
@@ -123,7 +124,7 @@ END:VCARD`;
 document.getElementById('editButton').addEventListener('click', function() {
     const profiles = JSON.parse(localStorage.getItem('profiles')) || {};
     const currentProfile = document.getElementById('profileSelect').value;
-    const profileData = profiles[currentProfile] || { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0' };
+    const profileData = profiles[currentProfile] || { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0', emoji: '💖' };
     
     document.getElementById('name').value = profileData.name || '';
     document.getElementById('email').value = profileData.email || '';

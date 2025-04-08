@@ -94,6 +94,14 @@ input {
     box-sizing: border-box;
 }
 
+input#profileEmoji {
+    font-size: 24px;
+    text-align: center;
+    width: 80px;
+    padding: 4px;
+    cursor: pointer;
+}
+
 button {
     width: 100%;
     padding: 12px;
