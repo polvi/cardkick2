@@ -92,30 +92,37 @@
             }
 
             try {
-                // Wait for any existing service workers to become ready
-                if (navigator.serviceWorker.controller) {
-                    await navigator.serviceWorker.ready;
-                }
-
-                // Clean up existing registrations
-                const registrations = await navigator.serviceWorker.getRegistrations();
-                await Promise.all(registrations.map(reg => reg.unregister()));
-
                 // Determine correct scope based on deployment path
                 const scope = new URL('./', window.location.href).pathname;
                 
-                // Register new service worker
+                // Register or update service worker
                 const registration = await navigator.serviceWorker.register('./sw.js', {
                     scope: scope,
                     updateViaCache: 'none'
                 });
 
+                // Handle updates
+                if (registration.waiting) {
+                    console.log('New ServiceWorker version waiting to activate');
+                }
+
+                registration.addEventListener('updatefound', () => {
+                    const newWorker = registration.installing;
+                    if (newWorker) {
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                console.log('New ServiceWorker version installed and waiting to activate');
+                            }
+                        });
+                    }
+                });
+
+                console.log('ServiceWorker registration successful for:', scope);
+
                 // Verify registration was successful
                 if (!registration.active && !registration.installing && !registration.waiting) {
                     throw new Error('ServiceWorker registration resulted in invalid state');
                 }
-
-                console.log('ServiceWorker registration successful for:', scope);
                 
             } catch (err) {
                 console.error('ServiceWorker registration failed:', err);
