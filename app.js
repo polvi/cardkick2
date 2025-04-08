@@ -97,8 +97,8 @@ function generateQRCode(data, retryCount = 0) {
         }
 
         // Validate required data
-        if (!data || !data.name || !data.phone || !data.email) {
-            throw new Error('Missing required contact information');
+        if (!data || !data.name) {
+            throw new Error('Name is required');
         }
 
         const vcard = `BEGIN:VCARD
