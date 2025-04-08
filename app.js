@@ -73,10 +73,14 @@ function checkSavedData() {
         } else {
             linkedinContainer.style.display = 'none';
         }
-        // Ensure QR code is generated with a small delay to allow for library loading
-        setTimeout(() => {
+        // Generate QR code immediately if library is loaded, otherwise retry
+        if (typeof qrcode !== 'undefined') {
             generateQRCode(profileData);
-        }, 100);
+        } else {
+            setTimeout(() => {
+                generateQRCode(profileData);
+            }, 500);
+        }
     } else {
         document.getElementById('formSection').style.display = 'block';
         document.getElementById('displaySection').style.display = 'none';
@@ -231,18 +235,22 @@ document.getElementById('vcardForm').addEventListener('submit', debounce(async f
     submitButton.textContent = 'Saving...';
     
     try {
-        const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    const phone = document.getElementById('phone').value;
-    const linkedin = document.getElementById('linkedin').value;
-    const color = document.getElementById('profileColor').value;
-    const emoji = document.getElementById('profileEmoji').value || '💖';
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const linkedin = document.getElementById('linkedin').value.trim();
+        const color = document.getElementById('profileColor').value;
+        const emoji = document.getElementById('profileEmoji').value.trim() || '💖';
     
     const profiles = JSON.parse(localStorage.getItem('profiles'));
     const currentProfile = document.getElementById('profileSelect').value;
     
     profiles[currentProfile] = { name, email, phone, linkedin, color, emoji };
     localStorage.setItem('profiles', JSON.stringify(profiles));
+    
+    // Update container color and emoji display immediately
+    document.querySelector('.container').style.backgroundColor = color;
+    document.getElementById('profileEmojiDisplay').textContent = emoji;
 
     // Update manifest background color
     const manifestContent = {
