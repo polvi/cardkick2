@@ -8,7 +8,7 @@ Cardkick is a privacy-focused web application that lets you create and share you
 - **QR Code Generation**: Instantly generate QR codes containing your contact information
 - **Privacy First**: All data is stored locally in your browser - no server or database
 - **Progressive Web App**: Install Cardkick on your device for offline access
-- **Customization**: Choose custom colors for your profiles
+- **Customization**: Choose custom colors and emojis for your profiles
 - **No Sign-up Required**: Start using immediately, no account needed
 
 ## Contact Information Supported
