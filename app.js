@@ -26,8 +26,8 @@ if (!navigator.onLine) {
 function initializeProfiles() {
     const profiles = JSON.parse(localStorage.getItem('profiles') || '{}');
     if (Object.keys(profiles).length === 0) {
-        profiles.personal = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0' };
-        profiles.business = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0' };
+        profiles.personal = { name: '', email: '', phone: '', linkedin: '', url: '', color: '#f0f0f0' };
+        profiles.business = { name: '', email: '', phone: '', linkedin: '', url: '', color: '#f0f0f0' };
         localStorage.setItem('profiles', JSON.stringify(profiles));
         
         // Show intro message for new users
@@ -50,7 +50,7 @@ function initializeProfiles() {
 function checkSavedData() {
     const profiles = initializeProfiles();
     const currentProfile = document.getElementById('profileSelect').value;
-    const profileData = profiles[currentProfile] || { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0' };
+    const profileData = profiles[currentProfile] || { name: '', email: '', phone: '', linkedin: '', url: '', color: '#f0f0f0' };
     
     if (profileData && profileData.name) {
         const color = profileData.color || '#f0f0f0';
@@ -68,6 +68,14 @@ function checkSavedData() {
             linkedinContainer.style.display = 'block';
         } else {
             linkedinContainer.style.display = 'none';
+        }
+        
+        const urlContainer = document.getElementById('urlContainer');
+        if (profileData.url) {
+            document.getElementById('displayUrl').textContent = profileData.url;
+            urlContainer.style.display = 'block';
+        } else {
+            urlContainer.style.display = 'none';
         }
         // Ensure QR code is generated with a small delay to allow for library loading
         setTimeout(() => {
@@ -107,6 +115,7 @@ FN:${data.name}
 TEL:${data.phone}
 EMAIL:${data.email}
 URL:${data.linkedin}
+URL:${data.url}
 END:VCARD`;
     
         const qr = qrcode(0, 'L');
@@ -128,6 +137,7 @@ document.getElementById('editButton').addEventListener('click', function() {
     document.getElementById('email').value = profileData.email || '';
     document.getElementById('phone').value = profileData.phone || '';
     document.getElementById('linkedin').value = profileData.linkedin || '';
+    document.getElementById('url').value = profileData.url || '';
     document.getElementById('profileColor').value = profileData.color || '#f0f0f0';
     document.getElementById('formSection').style.display = 'block';
     document.getElementById('displaySection').style.display = 'none';
@@ -180,7 +190,7 @@ document.getElementById('addProfileButton').addEventListener('click', function()
     if (profileName) {
         const profiles = JSON.parse(localStorage.getItem('profiles'));
         if (!profiles[profileName]) {
-            profiles[profileName] = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0' };
+            profiles[profileName] = { name: '', email: '', phone: '', linkedin: '', url: '', color: '#f0f0f0' };
             localStorage.setItem('profiles', JSON.stringify(profiles));
             
             const option = document.createElement('option');
@@ -218,12 +228,13 @@ document.getElementById('vcardForm').addEventListener('submit', debounce(async f
     const email = document.getElementById('email').value;
     const phone = document.getElementById('phone').value;
     const linkedin = document.getElementById('linkedin').value;
+    const url = document.getElementById('url').value;
     const color = document.getElementById('profileColor').value;
     
     const profiles = JSON.parse(localStorage.getItem('profiles'));
     const currentProfile = document.getElementById('profileSelect').value;
     
-    profiles[currentProfile] = { name, email, phone, linkedin, color };
+    profiles[currentProfile] = { name, email, phone, linkedin, url, color };
     localStorage.setItem('profiles', JSON.stringify(profiles));
 
     // Update manifest background color
