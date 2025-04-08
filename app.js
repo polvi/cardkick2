@@ -28,6 +28,7 @@ function initializeProfiles() {
     if (Object.keys(profiles).length === 0) {
         profiles.personal = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0', emoji: '👤' };
         profiles.business = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0', emoji: '💼' };
+        document.getElementById('profileEmojiDisplay').textContent = '👤';
         localStorage.setItem('profiles', JSON.stringify(profiles));
         
         // Show intro message for new users
@@ -50,11 +51,13 @@ function initializeProfiles() {
 function checkSavedData() {
     const profiles = initializeProfiles();
     const currentProfile = document.getElementById('profileSelect').value;
-    const profileData = profiles[currentProfile] || { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0', emoji: '💖' };
+    const profileData = profiles[currentProfile] || { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0', emoji: '👤' };
+    
+    // Always update emoji display regardless of whether there's profile data
+    document.getElementById('profileEmojiDisplay').textContent = profileData.emoji || '👤';
     
     if (profileData && profileData.name) {
         const color = profileData.color || '#f0f0f0';
-        document.getElementById('profileEmojiDisplay').textContent = profileData.emoji || '👤';
         document.querySelector('.container').style.backgroundColor = color;
         document.documentElement.style.setProperty('--theme-color', '#4CAF50');
         document.documentElement.style.setProperty('--theme-color-hover', adjustColor(color, -10));
@@ -139,7 +142,7 @@ document.getElementById('editButton').addEventListener('click', function() {
     document.getElementById('phone').value = profileData.phone || '';
     document.getElementById('linkedin').value = profileData.linkedin || '';
     document.getElementById('profileColor').value = profileData.color || '#f0f0f0';
-    document.getElementById('profileEmoji').value = profileData.emoji || '💖';
+    document.getElementById('profileEmoji').value = profileData.emoji || '👤';
     document.getElementById('formSection').style.display = 'block';
     document.getElementById('displaySection').style.display = 'none';
 });
@@ -192,8 +195,9 @@ document.getElementById('addProfileButton').addEventListener('click', function()
         const profiles = JSON.parse(localStorage.getItem('profiles'));
         if (!profiles[profileName]) {
             const profileEmoji = prompt('Choose an emoji for this profile:', '💖');
-            const emoji = profileEmoji || '💖';
+            const emoji = profileEmoji || '👤';
             profiles[profileName] = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0', emoji: emoji };
+            document.getElementById('profileEmojiDisplay').textContent = emoji;
             localStorage.setItem('profiles', JSON.stringify(profiles));
             
             const option = document.createElement('option');
