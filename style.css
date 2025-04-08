@@ -166,6 +166,14 @@ button.secondary:hover {
     padding: 15px;
     background-color: #f8f8f8;
     border-radius: 4px;
+    text-align: center;
+}
+
+.profile-emoji {
+    font-size: 4em;
+    display: block;
+    margin: 0 auto 20px;
+    text-align: center;
 }
 
 #qrcode {

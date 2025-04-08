@@ -26,7 +26,7 @@ if (!navigator.onLine) {
 function initializeProfiles() {
     const profiles = JSON.parse(localStorage.getItem('profiles') || '{}');
     if (Object.keys(profiles).length === 0) {
-        profiles.personal = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0', emoji: '🦄' };
+        profiles.personal = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0', emoji: '🌟' };
         profiles.business = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0', emoji: '💼' };
         localStorage.setItem('profiles', JSON.stringify(profiles));
         
