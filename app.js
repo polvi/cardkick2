@@ -28,7 +28,10 @@ function initializeProfiles() {
     if (Object.keys(profiles).length === 0) {
         profiles.personal = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0', emoji: '👤' };
         profiles.business = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0', emoji: '💼' };
-        document.getElementById('profileEmojiDisplay').textContent = profiles.personal.emoji;
+        const profileEmojiDisplay = document.getElementById('profileEmojiDisplay');
+        if (profileEmojiDisplay) {
+            profileEmojiDisplay.textContent = profiles.personal.emoji;
+        }
         localStorage.setItem('profiles', JSON.stringify(profiles));
         
         // Show intro message for new users
@@ -156,6 +159,15 @@ checkSavedData();
 
 // Profile selection change handler
 document.getElementById('profileSelect').addEventListener('change', function() {
+    const profiles = JSON.parse(localStorage.getItem('profiles') || '{}');
+    const currentProfile = this.value;
+    const profileData = profiles[currentProfile];
+    
+    if (profileData && profileData.emoji) {
+        document.getElementById('profileEmojiDisplay').textContent = profileData.emoji;
+        document.getElementById('profileEmoji').value = profileData.emoji;
+    }
+    
     // Ensure data is saved before generating QR code
     setTimeout(() => {
         checkSavedData();
