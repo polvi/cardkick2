@@ -3,9 +3,12 @@ name: Issue Bot
 on:
   issues:
     types: [opened]
+  issue_comment:
+    types: [created]
 
 jobs:
   update-code:
+    if: github.event_name == 'issues'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -102,3 +105,71 @@ jobs:
             gh issue comment ${{ github.event.issue.number }} --body "Thank you for your issue! The changes have been merged."
             gh issue close ${{ github.event.issue.number }}
           fi
+
+  update-pr:
+    if: github.event_name == 'issue_comment' && github.event.issue.pull_request
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          
+      - name: Install aider
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install aider-install
+          aider-install
+          
+      - name: Get PR details
+        id: pr_details
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER=${{ github.event.issue.number }}
+          PR_DATA=$(gh pr view $PR_NUMBER --json title,body,headRefName)
+          echo "PR_TITLE=$(echo "$PR_DATA" | jq -r '.title')" >> $GITHUB_OUTPUT
+          echo "PR_BODY=$(echo "$PR_DATA" | jq -r '.body')" >> $GITHUB_OUTPUT
+          echo "BRANCH_NAME=$(echo "$PR_DATA" | jq -r '.headRefName')" >> $GITHUB_OUTPUT
+          
+      - name: Checkout PR branch
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git fetch origin
+          git checkout ${{ steps.pr_details.outputs.BRANCH_NAME }}
+          
+      - name: Update code with aider based on comment
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          # Create EDITS file from PR context and new comment
+          echo "Update the code based on this pull request and the new comment:" > EDITS
+          echo "PR Title: ${{ steps.pr_details.outputs.PR_TITLE }}" >> EDITS
+          echo "PR Description: ${{ steps.pr_details.outputs.PR_BODY }}" >> EDITS
+          echo "" >> EDITS
+          echo "New comment: ${{ github.event.comment.body }}" >> EDITS
+          echo "" >> EDITS
+          echo "Please ensure any changes:" >> EDITS
+          echo "1. Maintain the privacy-first approach (all data stays in browser)" >> EDITS
+          echo "2. Keep PWA functionality intact" >> EDITS
+          echo "3. Update the README if new features are added or existing ones are modified" >> EDITS
+          
+          # Run aider with the correct parameters
+          aider --model openrouter/anthropic/claude-3.5-sonnet --no-detect-urls --message-file EDITS --yes-always
+          
+      - name: Push changes
+        run: |
+          git push origin ${{ steps.pr_details.outputs.BRANCH_NAME }}
+          
+      - name: Add comment to PR
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr comment ${{ github.event.issue.number }} --body "I've updated the PR based on your comment. Please review the changes."
