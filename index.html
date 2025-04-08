@@ -77,18 +77,32 @@
     <script src="app.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js', {scope: './'})
-                    .then(registration => {
+            window.addEventListener('load', async () => {
+                try {
+                    // Check if there's an existing registration
+                    const existingReg = await navigator.serviceWorker.getRegistration();
+                    
+                    // Only register if no registration exists
+                    if (!existingReg) {
+                        const registration = await navigator.serviceWorker.register('./sw.js', {
+                            scope: './',
+                            updateViaCache: 'none'
+                        });
                         console.log('ServiceWorker registration successful');
-                    })
-                    .catch(err => {
-                        console.error('ServiceWorker registration failed:', err);
-                        // Report to Sentry
-                        if (typeof Sentry !== 'undefined') {
+                    } else {
+                        console.log('ServiceWorker already registered');
+                    }
+                } catch (err) {
+                    console.error('ServiceWorker registration failed:', err);
+                    // Report to Sentry with additional context
+                    if (typeof Sentry !== 'undefined') {
+                        Sentry.withScope(scope => {
+                            scope.setExtra('swSupported', 'serviceWorker' in navigator);
+                            scope.setExtra('isSecureContext', window.isSecureContext);
                             Sentry.captureException(err);
-                        }
-                    });
+                        });
+                    }
+                }
             });
         }
     </script>
