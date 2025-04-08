@@ -7,22 +7,9 @@ Original Issue Description: Implement a feature that allows users to select an e
 
 PR Comment Thread (in chronological order):
 
-Most recent comment: seems like saving color/displaying QR code is broken
-<details><summary>Browser metadata</summary>
+Most recent comment: A new user left a comment. This user must be approved by a Netlify team owner before comments can be displayed.
 
-
-
-
-
-
-
-[Open in BrowserStack](https://www.browserstack.com/user/try-live?url=https%3A%2F%2Fdeploy-preview-88--cardkick.netlify.app%2F&os=OS%20X&os_version=Catalina&browser=Firefox&browser_version=136.0&resolution=1264x762&speed=1&start=true&ref=netlify-source)
-
-
-
-</details>
-
-[Open Deploy Preview](https://deploy-preview-88--cardkick.netlify.app/) · [Mark as Resolved](https://app.netlify.com/cdp/resolve?deployID=67f57707fd8c910008811de6&commentID=67f57831433427378b226a06&resolution=resolved)
+[Approve this user](https://app.netlify.com/teams/polvi/reviewers)
 
 Please ensure any changes:
 1. Maintain the privacy-first approach (all data stays in browser)
