@@ -1,14 +1,14 @@
 const CACHE_NAME = 'vcard-qr-v3';
 const ASSETS = [
-    '/',
-    '/index.html',
-    '/style.css',
-    '/app.js',
-    '/sentry.js',
+    './',
+    './index.html',
+    './style.css',
+    './app.js',
+    './sentry.js',
     'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js',
-    '/manifest.json',
-    '/icon-192.png',
-    '/icon-512.png'
+    './manifest.json',
+    './icon-192.png',
+    './icon-512.png'
 ];
 
 // Pre-cache assets during installation

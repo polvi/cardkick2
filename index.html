@@ -75,5 +75,22 @@
     </div>
     <script src="sentry.js"></script>
     <script src="app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js', {scope: './'})
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful');
+                    })
+                    .catch(err => {
+                        console.error('ServiceWorker registration failed:', err);
+                        // Report to Sentry
+                        if (typeof Sentry !== 'undefined') {
+                            Sentry.captureException(err);
+                        }
+                    });
+            });
+        }
+    </script>
 </body>
 </html>
