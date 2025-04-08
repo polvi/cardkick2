@@ -26,8 +26,8 @@ if (!navigator.onLine) {
 function initializeProfiles() {
     const profiles = JSON.parse(localStorage.getItem('profiles') || '{}');
     if (Object.keys(profiles).length === 0) {
-        profiles.personal = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0' };
-        profiles.business = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0' };
+        profiles.personal = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0', contactCards: {} };
+        profiles.business = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0', contactCards: {} };
         localStorage.setItem('profiles', JSON.stringify(profiles));
         
         // Show intro message for new users
@@ -133,8 +133,104 @@ document.getElementById('editButton').addEventListener('click', function() {
     document.getElementById('displaySection').style.display = 'none';
 });
 
+// Contact card management functions
+function addContactCard(name) {
+    const profiles = JSON.parse(localStorage.getItem('profiles'));
+    const currentProfile = document.getElementById('profileSelect').value;
+    
+    if (!profiles[currentProfile].contactCards) {
+        profiles[currentProfile].contactCards = {};
+    }
+    
+    profiles[currentProfile].contactCards[name] = {
+        name: name,
+        email: '',
+        phone: '',
+        notes: ''
+    };
+    
+    localStorage.setItem('profiles', JSON.stringify(profiles));
+    updateContactCardsList();
+}
+
+function updateContactCardsList() {
+    const profiles = JSON.parse(localStorage.getItem('profiles'));
+    const currentProfile = document.getElementById('profileSelect').value;
+    const contactCards = profiles[currentProfile].contactCards || {};
+    const container = document.getElementById('contactCardsList');
+    
+    container.innerHTML = '';
+    
+    Object.keys(contactCards).forEach(name => {
+        const card = contactCards[name];
+        const cardElement = document.createElement('div');
+        cardElement.className = 'contact-card';
+        cardElement.innerHTML = `
+            <h4>${card.name}</h4>
+            <p>${card.email || 'No email'}</p>
+            <p>${card.phone || 'No phone'}</p>
+            <button onclick="editContactCard('${name}')" class="secondary">Edit</button>
+            <button onclick="generateCardQR('${name}')" class="secondary">QR Code</button>
+        `;
+        container.appendChild(cardElement);
+    });
+}
+
+function editContactCard(name) {
+    const profiles = JSON.parse(localStorage.getItem('profiles'));
+    const currentProfile = document.getElementById('profileSelect').value;
+    const card = profiles[currentProfile].contactCards[name];
+    
+    const email = prompt('Enter email:', card.email || '');
+    const phone = prompt('Enter phone:', card.phone || '');
+    const notes = prompt('Enter notes:', card.notes || '');
+    
+    if (email !== null && phone !== null) {
+        profiles[currentProfile].contactCards[name] = {
+            name,
+            email,
+            phone,
+            notes
+        };
+        localStorage.setItem('profiles', JSON.stringify(profiles));
+        updateContactCardsList();
+    }
+}
+
+function generateCardQR(name) {
+    const profiles = JSON.parse(localStorage.getItem('profiles'));
+    const currentProfile = document.getElementById('profileSelect').value;
+    const card = profiles[currentProfile].contactCards[name];
+    
+    const vcard = `BEGIN:VCARD
+VERSION:3.0
+FN:${card.name}
+TEL:${card.phone}
+EMAIL:${card.email}
+NOTE:${card.notes}
+END:VCARD`;
+
+    const qr = qrcode(0, 'L');
+    qr.addData(vcard);
+    qr.make();
+    
+    const qrContainer = document.getElementById('qrcode');
+    qrContainer.innerHTML = qr.createImgTag(4);
+    document.getElementById('displaySection').style.display = 'block';
+    document.getElementById('formSection').style.display = 'none';
+}
+
+// Add contact card button handler
+document.getElementById('addContactCard').addEventListener('click', function() {
+    const name = prompt('Enter contact name:');
+    if (name) {
+        addContactCard(name);
+    }
+});
+
 // Check for saved data when page loads
 checkSavedData();
+updateContactCardsList();
 
 // Profile selection change handler
 document.getElementById('profileSelect').addEventListener('change', function() {
