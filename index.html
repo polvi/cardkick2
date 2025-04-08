@@ -80,19 +80,18 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', async () => {
                 try {
-                    // Check if there's an existing registration
-                    const existingReg = await navigator.serviceWorker.getRegistration();
-                    
-                    // Only register if no registration exists
-                    if (!existingReg) {
-                        const registration = await navigator.serviceWorker.register('./sw.js', {
-                            scope: './',
-                            updateViaCache: 'none'
-                        });
-                        console.log('ServiceWorker registration successful');
-                    } else {
-                        console.log('ServiceWorker already registered');
+                    // Unregister any existing service workers first
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (let registration of registrations) {
+                        await registration.unregister();
                     }
+                    
+                    // Register new service worker with current origin-relative path
+                    const registration = await navigator.serviceWorker.register('./sw.js', {
+                        scope: window.location.pathname,
+                        updateViaCache: 'none'
+                    });
+                    console.log('ServiceWorker registration successful for:', window.location.origin);
                 } catch (err) {
                     console.error('ServiceWorker registration failed:', err);
                     // Report to Sentry with additional context
