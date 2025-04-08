@@ -82,19 +82,23 @@ function checkSavedData() {
 
 function generateQRCode(data, retryCount = 0) {
     // Clear any existing error messages
-    document.getElementById('qrcode').innerHTML = '';
+    const qrcodeElement = document.getElementById('qrcode');
+    qrcodeElement.innerHTML = '';
     
     try {
+        // Add loading indicator
+        qrcodeElement.innerHTML = '<div class="loading">Generating QR Code...</div>';
+        
         if (typeof qrcode === 'undefined') {
             if (!navigator.onLine) {
                 throw new Error('You are offline. Please check your internet connection.');
             }
-            if (retryCount < 5) {
-                console.log('QR code library not loaded, retrying in 300ms...');
-                setTimeout(() => generateQRCode(data, retryCount + 1), 300);
+            if (retryCount < 10) { // Increased retry attempts
+                console.log(`QR code library not loaded, retrying in 500ms... (attempt ${retryCount + 1})`);
+                setTimeout(() => generateQRCode(data, retryCount + 1), 500);
                 return;
             }
-            throw new Error('QR code library failed to load');
+            throw new Error('QR code library failed to load after multiple attempts');
         }
 
         // Validate required data
@@ -116,7 +120,12 @@ END:VCARD`;
         document.getElementById('qrcode').innerHTML = qr.createImgTag(4);
     } catch (error) {
         console.error('QR code generation failed:', error);
-        document.getElementById('qrcode').innerHTML = '<p style="color: red;">Failed to generate QR code. Please try again.</p>';
+        document.getElementById('qrcode').innerHTML = `
+            <div class="error">
+                Failed to generate QR code: ${error.message}
+                <br><br>
+                <button onclick="generateQRCode(${JSON.stringify(data)})">Try Again</button>
+            </div>`;
     }
 }
 

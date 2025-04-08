@@ -220,3 +220,19 @@ button.secondary:hover {
     margin: 0 auto;
     display: block;
 }
+
+#qrcode .loading {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+    font-style: italic;
+}
+
+#qrcode .error {
+    color: #d32f2f;
+    text-align: center;
+    padding: 20px;
+    background: #ffebee;
+    border-radius: 4px;
+    margin: 10px 0;
+}
