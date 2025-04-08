@@ -131,7 +131,7 @@ END:VCARD`;
 document.getElementById('editButton').addEventListener('click', function() {
     const profiles = JSON.parse(localStorage.getItem('profiles')) || {};
     const currentProfile = document.getElementById('profileSelect').value;
-    const profileData = profiles[currentProfile] || { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0' };
+    const profileData = profiles[currentProfile] || { name: '', email: '', phone: '', linkedin: '', url: '', color: '#f0f0f0' };
     
     document.getElementById('name').value = profileData.name || '';
     document.getElementById('email').value = profileData.email || '';
