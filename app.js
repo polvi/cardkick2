@@ -2,10 +2,17 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js')
         .then(registration => {
             console.log('ServiceWorker registered');
-            // Check if there's an update available
-            registration.update();
+            return registration.update();
         })
-        .catch(err => console.log('ServiceWorker registration failed: ', err));
+        .then(() => {
+            console.log('ServiceWorker updated');
+        })
+        .catch(err => {
+            console.error('ServiceWorker error:', err);
+            if (typeof Sentry !== 'undefined') {
+                Sentry.captureException(err);
+            }
+        });
 }
 
 // Add offline/online event handlers
@@ -278,16 +285,25 @@ document.getElementById('vcardForm').addEventListener('submit', debounce(async f
         ]
     };
     
-    const manifestBlob = new Blob([JSON.stringify(manifestContent, null, 2)], {type: 'application/json'});
-    const manifestURL = URL.createObjectURL(manifestBlob);
-    const existingManifest = document.querySelector('link[rel="manifest"]');
-    if (existingManifest) {
-        existingManifest.href = manifestURL;
-    } else {
-        const manifestLink = document.createElement('link');
-        manifestLink.rel = 'manifest';
-        manifestLink.href = manifestURL;
-        document.head.appendChild(manifestLink);
+    try {
+        const manifestBlob = new Blob([JSON.stringify(manifestContent, null, 2)], {type: 'application/json'});
+        const manifestURL = URL.createObjectURL(manifestBlob);
+        const existingManifest = document.querySelector('link[rel="manifest"]');
+        if (existingManifest) {
+            existingManifest.href = manifestURL;
+        } else {
+            const manifestLink = document.createElement('link');
+            manifestLink.rel = 'manifest';
+            manifestLink.href = manifestURL;
+            document.head.appendChild(manifestLink);
+        }
+        // Clean up the blob URL when done
+        setTimeout(() => URL.revokeObjectURL(manifestURL), 1000);
+    } catch (error) {
+        console.error('Failed to update manifest:', error);
+        if (typeof Sentry !== 'undefined') {
+            Sentry.captureException(error);
+        }
     }
     
     // Hide SEO content after saving data
