@@ -35,6 +35,13 @@ self.addEventListener('activate', event => {
     );
 });
 
+// Listen for skip waiting message
+self.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'SKIP_WAITING') {
+        self.skipWaiting();
+    }
+});
+
 // Serve from cache, falling back to network
 self.addEventListener('fetch', event => {
     event.respondWith(
@@ -57,7 +64,11 @@ self.addEventListener('fetch', event => {
                         const responseToCache = response.clone();
                         caches.open(CACHE_NAME)
                             .then(cache => {
-                                cache.put(event.request, responseToCache);
+                                try {
+                                    cache.put(event.request, responseToCache);
+                                } catch (err) {
+                                    console.error('Cache put error:', err);
+                                }
                             });
 
                         return response;
