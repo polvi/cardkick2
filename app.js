@@ -26,8 +26,8 @@ if (!navigator.onLine) {
 function initializeProfiles() {
     const profiles = JSON.parse(localStorage.getItem('profiles') || '{}');
     if (Object.keys(profiles).length === 0) {
-        profiles.personal = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0' };
-        profiles.business = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0' };
+        profiles.personal = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0', photo: '' };
+        profiles.business = { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0', photo: '' };
         localStorage.setItem('profiles', JSON.stringify(profiles));
         
         // Show intro message for new users
@@ -50,7 +50,7 @@ function initializeProfiles() {
 function checkSavedData() {
     const profiles = initializeProfiles();
     const currentProfile = document.getElementById('profileSelect').value;
-    const profileData = profiles[currentProfile] || { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0' };
+    const profileData = profiles[currentProfile] || { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0', photo: '' };
     
     if (profileData && profileData.name) {
         const color = profileData.color || '#f0f0f0';
@@ -68,6 +68,16 @@ function checkSavedData() {
             linkedinContainer.style.display = 'block';
         } else {
             linkedinContainer.style.display = 'none';
+        }
+
+        // Handle photo display
+        const photoDisplay = document.getElementById('photoDisplay');
+        const displayPhoto = document.getElementById('displayPhoto');
+        if (profileData.photo) {
+            displayPhoto.src = profileData.photo;
+            photoDisplay.style.display = 'block';
+        } else {
+            photoDisplay.style.display = 'none';
         }
         // Ensure QR code is generated with a small delay to allow for library loading
         setTimeout(() => {
@@ -129,6 +139,16 @@ document.getElementById('editButton').addEventListener('click', function() {
     document.getElementById('phone').value = profileData.phone || '';
     document.getElementById('linkedin').value = profileData.linkedin || '';
     document.getElementById('profileColor').value = profileData.color || '#f0f0f0';
+    
+    // Handle photo preview
+    const photoPreview = document.getElementById('photoPreview');
+    const photoPreviewImage = document.getElementById('photoPreviewImage');
+    if (profileData.photo) {
+        photoPreviewImage.src = profileData.photo;
+        photoPreview.style.display = 'block';
+    } else {
+        photoPreview.style.display = 'none';
+    }
     document.getElementById('formSection').style.display = 'block';
     document.getElementById('displaySection').style.display = 'none';
 });
@@ -219,11 +239,21 @@ document.getElementById('vcardForm').addEventListener('submit', debounce(async f
     const phone = document.getElementById('phone').value;
     const linkedin = document.getElementById('linkedin').value;
     const color = document.getElementById('profileColor').value;
+    const photoInput = document.getElementById('photo');
     
     const profiles = JSON.parse(localStorage.getItem('profiles'));
     const currentProfile = document.getElementById('profileSelect').value;
     
-    profiles[currentProfile] = { name, email, phone, linkedin, color };
+    // Keep existing photo if no new one is selected
+    const existingPhoto = profiles[currentProfile]?.photo || '';
+    profiles[currentProfile] = { 
+        name, 
+        email, 
+        phone, 
+        linkedin, 
+        color,
+        photo: existingPhoto 
+    };
     localStorage.setItem('profiles', JSON.stringify(profiles));
 
     // Update manifest background color
@@ -281,3 +311,42 @@ document.getElementById('vcardForm').addEventListener('submit', debounce(async f
         submitButton.textContent = 'Save and Generate QR Code';
     }
 }, 500));
+
+// Photo handling
+document.getElementById('photo').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        if (file.size > 500000) { // 500KB limit
+            alert('Photo must be less than 500KB');
+            this.value = '';
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const photoPreview = document.getElementById('photoPreview');
+            const photoPreviewImage = document.getElementById('photoPreviewImage');
+            photoPreviewImage.src = e.target.result;
+            photoPreview.style.display = 'block';
+            
+            // Save to profile
+            const profiles = JSON.parse(localStorage.getItem('profiles'));
+            const currentProfile = document.getElementById('profileSelect').value;
+            profiles[currentProfile].photo = e.target.result;
+            localStorage.setItem('profiles', JSON.stringify(profiles));
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+document.getElementById('removePhoto').addEventListener('click', function() {
+    const photoInput = document.getElementById('photo');
+    const photoPreview = document.getElementById('photoPreview');
+    const profiles = JSON.parse(localStorage.getItem('profiles'));
+    const currentProfile = document.getElementById('profileSelect').value;
+    
+    photoInput.value = '';
+    photoPreview.style.display = 'none';
+    profiles[currentProfile].photo = '';
+    localStorage.setItem('profiles', JSON.stringify(profiles));
+});
