@@ -314,45 +314,63 @@ document.getElementById('vcardForm').addEventListener('submit', debounce(async f
 
 // Photo handling
 const photoInput = document.getElementById('photo');
-if (photoInput) {
+const photoPreview = document.getElementById('photoPreview');
+const photoPreviewImage = document.getElementById('photoPreviewImage');
+const removePhotoButton = document.getElementById('removePhoto');
+
+if (photoInput && photoPreview && photoPreviewImage) {
     photoInput.addEventListener('change', function(e) {
         const file = e.target.files[0];
-        if (file) {
-            if (file.size > 500000) { // 500KB limit
-                alert('Photo must be less than 500KB');
-                this.value = '';
-                return;
-            }
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const photoPreview = document.getElementById('photoPreview');
-                const photoPreviewImage = document.getElementById('photoPreviewImage');
+        if (!file) return;
+
+        if (file.size > 500000) { // 500KB limit
+            alert('Photo must be less than 500KB');
+            this.value = '';
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
                 photoPreviewImage.src = e.target.result;
                 photoPreview.style.display = 'block';
                 
                 // Save to profile
-                const profiles = JSON.parse(localStorage.getItem('profiles'));
-                const currentProfile = document.getElementById('profileSelect').value;
+                const profiles = JSON.parse(localStorage.getItem('profiles') || '{}');
+                const currentProfile = document.getElementById('profileSelect')?.value || 'personal';
+                if (!profiles[currentProfile]) {
+                    profiles[currentProfile] = {};
+                }
                 profiles[currentProfile].photo = e.target.result;
                 localStorage.setItem('profiles', JSON.stringify(profiles));
-            };
-            reader.readAsDataURL(file);
-        }
+            } catch (error) {
+                console.error('Error handling photo:', error);
+                if (typeof Sentry !== 'undefined') {
+                    Sentry.captureException(error);
+                }
+            }
+        };
+        reader.readAsDataURL(file);
     });
 }
 
-const removePhotoButton = document.getElementById('removePhoto');
-if (removePhotoButton) {
+if (removePhotoButton && photoPreview && photoInput) {
     removePhotoButton.addEventListener('click', function() {
-        const photoInput = document.getElementById('photo');
-        const photoPreview = document.getElementById('photoPreview');
-        const profiles = JSON.parse(localStorage.getItem('profiles'));
-        const currentProfile = document.getElementById('profileSelect').value;
-        
-        photoInput.value = '';
-        photoPreview.style.display = 'none';
-        profiles[currentProfile].photo = '';
-        localStorage.setItem('profiles', JSON.stringify(profiles));
+        try {
+            photoInput.value = '';
+            photoPreview.style.display = 'none';
+            
+            const profiles = JSON.parse(localStorage.getItem('profiles') || '{}');
+            const currentProfile = document.getElementById('profileSelect')?.value || 'personal';
+            if (profiles[currentProfile]) {
+                profiles[currentProfile].photo = '';
+                localStorage.setItem('profiles', JSON.stringify(profiles));
+            }
+        } catch (error) {
+            console.error('Error removing photo:', error);
+            if (typeof Sentry !== 'undefined') {
+                Sentry.captureException(error);
+            }
+        }
     });
 }
