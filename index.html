@@ -47,6 +47,14 @@
                 <label for="profileColor">Profile Color:</label>
                 <input type="color" id="profileColor" value="#f0f0f0">
             </div>
+            <div class="input-group">
+                <label for="photo">Photo:</label>
+                <input type="file" id="photo" accept="image/*">
+                <div id="photoPreview" style="display: none; margin-top: 10px;">
+                    <img id="photoPreviewImage" style="max-width: 200px; max-height: 200px;">
+                    <button type="button" id="removePhoto" class="secondary">Remove Photo</button>
+                </div>
+            </div>
                 <button type="submit" id="submitButton">Save and Generate QR Code</button>
             </form>
         </div>
