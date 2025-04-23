@@ -1,12 +1,19 @@
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js')
-        .then(registration => {
-            console.log('ServiceWorker registered');
-            // Check if there's an update available
-            registration.update();
-        })
-        .catch(err => console.log('ServiceWorker registration failed: ', err));
-}
+document.addEventListener('DOMContentLoaded', function() {
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js')
+            .then(registration => {
+                console.log('ServiceWorker registered');
+                // Check if there's an update available
+                registration.update();
+            })
+            .catch(err => {
+                console.error('ServiceWorker registration failed: ', err);
+                if (typeof Sentry !== 'undefined') {
+                    Sentry.captureException(err);
+                }
+            });
+    }
+});
 
 // Add offline/online event handlers
 window.addEventListener('online', function() {
