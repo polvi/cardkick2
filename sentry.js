@@ -1,18 +1,23 @@
 window.sentryOnLoad = function() {
   Sentry.init({
-    // add other configuration here
+    enableInternalErrorTracking: true,
+    debug: false,
+    tracesSampleRate: 1.0,
+    replaysOnErrorSampleRate: 1.0
+  });
+
+  window.addEventListener('unhandledrejection', function(event) {
+    Sentry.captureException(event.reason);
   });
 
   Sentry.lazyLoadIntegration("feedbackIntegration")
     .then((feedbackIntegration) => {
       Sentry.addIntegration(feedbackIntegration({
-  	autoInject: true,
-	isEmailRequired: false
-        // User Feedback configuration options
+        autoInject: true,
+        isEmailRequired: false
       }));
     })
-    .catch(() => {
-      // this can happen if e.g. a network error occurs,
-      // in this case User Feedback will not be enabled
+    .catch((error) => {
+      console.warn('Failed to load Sentry feedback integration:', error);
     });
 };
