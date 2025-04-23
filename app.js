@@ -129,7 +129,8 @@ END:VCARD`;
     }
 }
 
-document.getElementById('editButton').addEventListener('click', function() {
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('editButton').addEventListener('click', function() {
     const profiles = JSON.parse(localStorage.getItem('profiles')) || {};
     const currentProfile = document.getElementById('profileSelect').value;
     const profileData = profiles[currentProfile] || { name: '', email: '', phone: '', linkedin: '', color: '#f0f0f0' };
@@ -153,11 +154,13 @@ document.getElementById('editButton').addEventListener('click', function() {
     document.getElementById('displaySection').style.display = 'none';
 });
 
-// Check for saved data when page loads
-checkSavedData();
+// Wait for DOM to be fully loaded before initializing
+document.addEventListener('DOMContentLoaded', function() {
+    // Check for saved data when page loads
+    checkSavedData();
 
-// Profile selection change handler
-document.getElementById('profileSelect').addEventListener('change', function() {
+    // Profile selection change handler
+    document.getElementById('profileSelect').addEventListener('change', function() {
     // Ensure data is saved before generating QR code
     setTimeout(() => {
         checkSavedData();
@@ -165,7 +168,8 @@ document.getElementById('profileSelect').addEventListener('change', function() {
 });
 
 // Edit profile name handler
-document.getElementById('editProfileNameButton').addEventListener('click', function() {
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('editProfileNameButton').addEventListener('click', function() {
     const currentProfile = document.getElementById('profileSelect').value;
     const newName = prompt('Enter new name for profile:', currentProfile);
     
@@ -195,7 +199,8 @@ document.getElementById('editProfileNameButton').addEventListener('click', funct
 });
 
 // Add new profile handler
-document.getElementById('addProfileButton').addEventListener('click', function() {
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('addProfileButton').addEventListener('click', function() {
     const profileName = prompt('Enter new profile name:');
     if (profileName) {
         const profiles = JSON.parse(localStorage.getItem('profiles'));
@@ -225,7 +230,8 @@ function adjustColor(color, amount) {
     return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 }
 
-document.getElementById('vcardForm').addEventListener('submit', debounce(async function(e) {
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('vcardForm').addEventListener('submit', debounce(async function(e) {
     e.preventDefault();
     
     const submitButton = document.getElementById('submitButton');
@@ -313,7 +319,8 @@ document.getElementById('vcardForm').addEventListener('submit', debounce(async f
 }, 500));
 
 // Photo handling
-document.getElementById('photo').addEventListener('change', function(e) {
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('photo').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) {
         if (file.size > 500000) { // 500KB limit
@@ -339,7 +346,8 @@ document.getElementById('photo').addEventListener('change', function(e) {
     }
 });
 
-document.getElementById('removePhoto').addEventListener('click', function() {
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('removePhoto').addEventListener('click', function() {
     const photoInput = document.getElementById('photo');
     const photoPreview = document.getElementById('photoPreview');
     const profiles = JSON.parse(localStorage.getItem('profiles'));
