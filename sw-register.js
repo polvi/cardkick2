@@ -13,10 +13,16 @@ async function registerServiceWorker(retryCount = 0) {
     }
 
     try {
+        // Check for existing registration first
+        const existingReg = await navigator.serviceWorker.getRegistration();
+        if (existingReg) {
+            await existingReg.unregister();
+        }
+
         // Determine correct scope based on deployment path
         const scope = new URL('./', window.location.href).pathname;
         
-        // Register or update service worker
+        // Register new service worker
         const registration = await navigator.serviceWorker.register('./sw.js', {
             scope: scope,
             updateViaCache: 'none'
@@ -24,17 +30,26 @@ async function registerServiceWorker(retryCount = 0) {
 
         // Handle updates
         if (registration.waiting) {
-            console.log('New ServiceWorker version waiting to activate');
+            await registration.waiting.postMessage({type: 'SKIP_WAITING'});
         }
 
         registration.addEventListener('updatefound', () => {
             const newWorker = registration.installing;
             if (newWorker) {
                 newWorker.addEventListener('statechange', () => {
-                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                        console.log('New ServiceWorker version installed and waiting to activate');
+                    if (newWorker.state === 'installed') {
+                        if (navigator.serviceWorker.controller) {
+                            newWorker.postMessage({type: 'SKIP_WAITING'});
+                        }
                     }
                 });
+            }
+        });
+
+        // Listen for controller change
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (registration.active) {
+                console.log('New ServiceWorker activated');
             }
         });
 
@@ -44,6 +59,8 @@ async function registerServiceWorker(retryCount = 0) {
         if (!registration.active && !registration.installing && !registration.waiting) {
             throw new Error('ServiceWorker registration resulted in invalid state');
         }
+
+        return registration;
         
     } catch (err) {
         console.error('ServiceWorker registration failed:', err);
