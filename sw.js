@@ -1,22 +1,38 @@
-const CACHE_NAME = 'vcard-qr-v3';
+const CACHE_NAME = 'vcard-qr-v4';
 const ASSETS = [
-    './',
-    './index.html',
-    './style.css',
-    './app.js',
-    './sentry.js',
+    '/',
+    '/index.html',
+    '/style.css',
+    '/app.js',
+    '/sentry.js',
+    '/debounce.js',
     'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js',
-    './manifest.json',
-    './icon-192.png',
-    './icon-512.png'
+    '/manifest.json',
+    '/icon-192.png',
+    '/icon-512.png'
 ];
 
 // Pre-cache assets during installation
 self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(CACHE_NAME)
-            .then(cache => cache.addAll(ASSETS))
+            .then(cache => {
+                return Promise.all(
+                    ASSETS.map(url => {
+                        return cache.add(url).catch(err => {
+                            console.error('Failed to cache:', url, err);
+                            // Continue caching other assets even if one fails
+                            return Promise.resolve();
+                        });
+                    })
+                );
+            })
             .then(() => self.skipWaiting())
+            .catch(err => {
+                console.error('Service Worker installation failed:', err);
+                // Allow installation to continue even if caching fails
+                return self.skipWaiting();
+            })
     );
 });
 
