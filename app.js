@@ -80,10 +80,10 @@ function checkSavedData() {
         // Handle photo display
         const photoDisplay = document.getElementById('photoDisplay');
         const displayPhoto = document.getElementById('displayPhoto');
-        if (profileData.photo) {
+        if (photoDisplay && displayPhoto && profileData.photo) {
             displayPhoto.src = profileData.photo;
             photoDisplay.style.display = 'block';
-        } else {
+        } else if (photoDisplay) {
             photoDisplay.style.display = 'none';
         }
         // Ensure QR code is generated with a small delay to allow for library loading
