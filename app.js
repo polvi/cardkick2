@@ -86,10 +86,13 @@ function checkSavedData() {
         } else if (photoDisplay) {
             photoDisplay.style.display = 'none';
         }
-        // Ensure QR code is generated with a small delay to allow for library loading
-        setTimeout(() => {
-            generateQRCode(profileData);
-        }, 100);
+        // Generate QR code with proper error handling
+        generateQRCode(profileData).catch(error => {
+            console.error('Failed to generate QR code:', error);
+            if (typeof Sentry !== 'undefined') {
+                Sentry.captureException(error);
+            }
+        });
     } else {
         document.getElementById('formSection').style.display = 'block';
         document.getElementById('displaySection').style.display = 'none';
@@ -97,43 +100,56 @@ function checkSavedData() {
 }
 
 function generateQRCode(data, retryCount = 0) {
-    // Clear any existing error messages
-    document.getElementById('qrcode').innerHTML = '';
+    const qrcodeElement = document.getElementById('qrcode');
+    qrcodeElement.innerHTML = '<p>Generating QR code...</p>';
     
-    try {
-        if (typeof qrcode === 'undefined') {
-            if (!navigator.onLine) {
-                throw new Error('You are offline. Please check your internet connection.');
-            }
-            if (retryCount < 5) {
-                console.log('QR code library not loaded, retrying in 300ms...');
-                setTimeout(() => generateQRCode(data, retryCount + 1), 300);
-                return;
-            }
-            throw new Error('QR code library failed to load');
-        }
+    return new Promise((resolve, reject) => {
+        function attemptGeneration() {
+            try {
+                if (typeof qrcode === 'undefined') {
+                    if (!navigator.onLine) {
+                        throw new Error('You are offline. Please check your internet connection.');
+                    }
+                    if (retryCount < 10) {
+                        console.log(`QR code library not loaded, retrying... (${retryCount + 1}/10)`);
+                        setTimeout(() => {
+                            generateQRCode(data, retryCount + 1).then(resolve).catch(reject);
+                        }, 500);
+                        return;
+                    }
+                    throw new Error('QR code library failed to load after multiple attempts');
+                }
 
-        // Validate required data
-        if (!data || !data.name || !data.phone || !data.email) {
-            throw new Error('Missing required contact information');
-        }
+                // Validate required data
+                if (!data || !data.name || !data.phone || !data.email) {
+                    throw new Error('Please fill in all required fields (name, phone, email)');
+                }
 
-        const vcard = `BEGIN:VCARD
+                const vcard = `BEGIN:VCARD
 VERSION:3.0
 FN:${data.name}
 TEL:${data.phone}
-EMAIL:${data.email}
-URL:${data.linkedin}
+EMAIL:${data.email}${data.linkedin ? `\nURL:${data.linkedin}` : ''}
 END:VCARD`;
     
-        const qr = qrcode(0, 'L');
-        qr.addData(vcard);
-        qr.make();
-        document.getElementById('qrcode').innerHTML = qr.createImgTag(4);
-    } catch (error) {
-        console.error('QR code generation failed:', error);
-        document.getElementById('qrcode').innerHTML = '<p style="color: red;">Failed to generate QR code. Please try again.</p>';
-    }
+                const qr = qrcode(0, 'L');
+                qr.addData(vcard);
+                qr.make();
+                qrcodeElement.innerHTML = qr.createImgTag(4);
+                resolve();
+            } catch (error) {
+                console.error('QR code generation failed:', error);
+                qrcodeElement.innerHTML = `<p style="color: red;">Error: ${error.message}</p>
+                    <button onclick="checkSavedData()" style="margin-top: 10px;">Try Again</button>`;
+                reject(error);
+                if (typeof Sentry !== 'undefined') {
+                    Sentry.captureException(error);
+                }
+            }
+        }
+        
+        attemptGeneration();
+    });
 }
 
 document.getElementById('editButton').addEventListener('click', function() {
