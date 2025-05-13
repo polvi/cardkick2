@@ -22,9 +22,9 @@ async function registerServiceWorker(retryCount = 0) {
         // Determine correct scope based on deployment path
         const scope = new URL('./', window.location.href).pathname;
         
-        // Register new service worker
-        const registration = await navigator.serviceWorker.register('./sw.js', {
-            scope: scope,
+        // Register new service worker with correct path
+        const registration = await navigator.serviceWorker.register('/sw.js', {
+            scope: '/',
             updateViaCache: 'none'
         });
 
