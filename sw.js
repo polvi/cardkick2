@@ -1,15 +1,14 @@
-const CACHE_NAME = 'vcard-qr-v4';
+const CACHE_NAME = 'cardkick-v1';
 const ASSETS = [
-    '/',
-    '/index.html',
-    '/style.css',
-    '/app.js',
-    '/sentry.js',
-    '/debounce.js',
+    './',
+    './index.html',
+    './style.css',
+    './app.js',
+    './sentry.js',
+    './debounce.js',
+    './sw-register.js',
     'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js',
-    '/manifest.json',
-    '/icon-192.png',
-    '/icon-512.png'
+    './manifest.json'
 ];
 
 // Pre-cache assets during installation
