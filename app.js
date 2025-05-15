@@ -257,27 +257,50 @@ document.getElementById('vcardForm').addEventListener('submit', debounce(async f
     submitButton.textContent = 'Saving...';
     
     try {
-        const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    const phone = document.getElementById('phone').value;
-    const linkedin = document.getElementById('linkedin').value;
-    const color = document.getElementById('profileColor').value;
-    const photoInput = document.getElementById('photo');
-    
-    const profiles = JSON.parse(localStorage.getItem('profiles'));
-    const currentProfile = document.getElementById('profileSelect').value;
-    
-    // Keep existing photo if no new one is selected
-    const existingPhoto = profiles[currentProfile]?.photo || '';
-    profiles[currentProfile] = { 
-        name, 
-        email, 
-        phone, 
-        linkedin, 
-        color,
-        photo: existingPhoto 
-    };
-    localStorage.setItem('profiles', JSON.stringify(profiles));
+        const name = document.getElementById('name').value.trim();
+        if (!name) {
+            throw new Error('Name is required');
+        }
+        
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
+        const linkedin = document.getElementById('linkedin').value;
+        const color = document.getElementById('profileColor').value;
+        const photoInput = document.getElementById('photo');
+        
+        const profiles = JSON.parse(localStorage.getItem('profiles') || '{}');
+        const currentProfile = document.getElementById('profileSelect').value;
+        
+        if (!currentProfile) {
+            throw new Error('No profile selected');
+        }
+        
+        // Keep existing photo if no new one is selected
+        const existingPhoto = profiles[currentProfile]?.photo || '';
+        
+        // Create new profile data
+        const newProfileData = { 
+            name, 
+            email, 
+            phone, 
+            linkedin, 
+            color,
+            photo: existingPhoto 
+        };
+        
+        // Update profile
+        profiles[currentProfile] = newProfileData;
+        
+        // Save to localStorage
+        localStorage.setItem('profiles', JSON.stringify(profiles));
+        
+        // Verify save was successful
+        const savedProfiles = JSON.parse(localStorage.getItem('profiles') || '{}');
+        const savedProfile = savedProfiles[currentProfile];
+        
+        if (!savedProfile || savedProfile.name !== name) {
+            throw new Error('Failed to save profile data');
+        }
 
     // Update manifest background color
     const manifestContent = {
@@ -337,6 +360,8 @@ document.getElementById('vcardForm').addEventListener('submit', debounce(async f
         if (typeof Sentry !== 'undefined') {
             Sentry.captureException(error);
         }
+        alert(`Error saving profile: ${error.message}`);
+        return;
     } finally {
         submitButton.disabled = false;
         submitButton.classList.remove('processing');
