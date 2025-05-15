@@ -1,37 +1,39 @@
-const CACHE_NAME = 'cardkick-v1';
+const CACHE_NAME = 'cardkick-v2';
 const ASSETS = [
-    './',
-    './index.html',
-    './style.css',
-    './app.js',
-    './sentry.js',
-    './debounce.js',
-    './sw-register.js',
-    'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js',
-    './manifest.json'
+    'index.html',
+    'style.css',
+    'app.js',
+    'sentry.js',
+    'debounce.js',
+    'sw-register.js',
+    'manifest.json',
+    'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js'
 ];
 
 // Pre-cache assets during installation
 self.addEventListener('install', event => {
     event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then(cache => {
-                return Promise.all(
-                    ASSETS.map(url => {
-                        return cache.add(url).catch(err => {
-                            console.error('Failed to cache:', url, err);
-                            // Continue caching other assets even if one fails
-                            return Promise.resolve();
-                        });
+        (async () => {
+            const cache = await caches.open(CACHE_NAME);
+            const baseUrl = self.registration.scope;
+            
+            // Add base URL to relative paths
+            const urlsToCache = ASSETS.map(path => {
+                return path.startsWith('http') ? path : new URL(path, baseUrl).href;
+            });
+            
+            // Cache all assets
+            await Promise.all(
+                urlsToCache.map(url => 
+                    cache.add(url).catch(err => {
+                        console.error('Failed to cache:', url, err);
+                        return Promise.resolve();
                     })
-                );
-            })
-            .then(() => self.skipWaiting())
-            .catch(err => {
-                console.error('Service Worker installation failed:', err);
-                // Allow installation to continue even if caching fails
-                return self.skipWaiting();
-            })
+                )
+            );
+            
+            await self.skipWaiting();
+        })()
     );
 });
 
