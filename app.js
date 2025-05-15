@@ -99,57 +99,29 @@ function checkSavedData() {
     }
 }
 
-function generateQRCode(data, retryCount = 0) {
-    const qrcodeElement = document.getElementById('qrcode');
-    qrcodeElement.innerHTML = '<p>Generating QR code...</p>';
-    
-    return new Promise((resolve, reject) => {
-        function attemptGeneration() {
-            try {
-                if (typeof qrcode === 'undefined') {
-                    if (!navigator.onLine) {
-                        throw new Error('You are offline. Please check your internet connection.');
-                    }
-                    if (retryCount < 10) {
-                        console.log(`QR code library not loaded, retrying... (${retryCount + 1}/10)`);
-                        setTimeout(() => {
-                            generateQRCode(data, retryCount + 1).then(resolve).catch(reject);
-                        }, 500);
-                        return;
-                    }
-                    throw new Error('QR code library failed to load after multiple attempts');
-                }
+async function generateQRCode(data) {
+    try {
+        // Validate required data
+        if (!data || !data.name || !data.phone || !data.email) {
+            throw new Error('Please fill in all required fields (name, phone, email)');
+        }
 
-                // Validate required data
-                if (!data || !data.name || !data.phone || !data.email) {
-                    throw new Error('Please fill in all required fields (name, phone, email)');
-                }
-
-                const vcard = `BEGIN:VCARD
+        const vcard = `BEGIN:VCARD
 VERSION:3.0
 FN:${data.name}
 TEL:${data.phone}
 EMAIL:${data.email}${data.linkedin ? `\nURL:${data.linkedin}` : ''}
 END:VCARD`;
-    
-                const qr = qrcode(0, 'L');
-                qr.addData(vcard);
-                qr.make();
-                qrcodeElement.innerHTML = qr.createImgTag(4);
-                resolve();
-            } catch (error) {
-                console.error('QR code generation failed:', error);
-                qrcodeElement.innerHTML = `<p style="color: red;">Error: ${error.message}</p>
-                    <button onclick="checkSavedData()" style="margin-top: 10px;">Try Again</button>`;
-                reject(error);
-                if (typeof Sentry !== 'undefined') {
-                    Sentry.captureException(error);
-                }
-            }
+
+        await generateQRCode(vcard);
+        return true;
+    } catch (error) {
+        console.error('QR code generation failed:', error);
+        if (typeof Sentry !== 'undefined') {
+            Sentry.captureException(error);
         }
-        
-        attemptGeneration();
-    });
+        throw error;
+    }
 }
 
 document.getElementById('editButton').addEventListener('click', function() {
