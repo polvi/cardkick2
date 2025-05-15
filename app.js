@@ -113,7 +113,15 @@ TEL:${data.phone}
 EMAIL:${data.email}${data.linkedin ? `\nURL:${data.linkedin}` : ''}
 END:VCARD`;
 
-        await generateQRCode(vcard);
+        // Create QR Code
+        const qr = qrcode(0, 'M');
+        qr.addData(vcard);
+        qr.make();
+        
+        // Display QR Code
+        const qrcodeElement = document.getElementById('qrcode');
+        qrcodeElement.innerHTML = qr.createImgTag(5);
+        
         return true;
     } catch (error) {
         console.error('QR code generation failed:', error);
