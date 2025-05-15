@@ -1,19 +1,4 @@
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js')
-        .then(registration => {
-            console.log('ServiceWorker registered');
-            return registration.update();
-        })
-        .then(() => {
-            console.log('ServiceWorker updated');
-        })
-        .catch(err => {
-            console.error('ServiceWorker error:', err);
-            if (typeof Sentry !== 'undefined') {
-                Sentry.captureException(err);
-            }
-        });
-}
+// Service worker registration is now handled by sw-register.js
 
 // Add offline/online event handlers
 window.addEventListener('online', function() {
