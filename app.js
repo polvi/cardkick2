@@ -161,7 +161,7 @@ document.getElementById('editProfileNameButton').addEventListener('click', funct
         const profiles = JSON.parse(localStorage.getItem('profiles'));
         
         if (profiles[newName]) {
-            alert('A profile with that name already exists!');
+            showFeedback('A profile with that name already exists!', 'error');
             return;
         }
         
@@ -198,7 +198,7 @@ document.getElementById('addProfileButton').addEventListener('click', function()
             document.getElementById('profileSelect').value = profileName;
             checkSavedData();
         } else {
-            alert('Profile already exists!');
+            showFeedback('Profile already exists!', 'error');
         }
     }
 });
@@ -267,6 +267,8 @@ document.getElementById('vcardForm').addEventListener('submit', debounce(async f
             throw new Error('Failed to save profile data');
         }
 
+        showFeedback('Profile saved successfully!', 'success');
+
     // Update manifest background color
     const manifestContent = {
         name: "Cardkick",
@@ -325,7 +327,7 @@ document.getElementById('vcardForm').addEventListener('submit', debounce(async f
         if (typeof Sentry !== 'undefined') {
             Sentry.captureException(error);
         }
-        alert(`Error saving profile: ${error.message}`);
+        showFeedback(`Error saving profile: ${error.message}`, 'error');
         return;
     } finally {
         submitButton.disabled = false;
@@ -346,7 +348,7 @@ if (photoInput && photoPreview && photoPreviewImage) {
         if (!file) return;
 
         if (file.size > 500000) { // 500KB limit
-            alert('Photo must be less than 500KB');
+            showFeedback('Photo must be less than 500KB', 'error');
             this.value = '';
             return;
         }
