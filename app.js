@@ -91,6 +91,11 @@ async function generateQRCode(data) {
             throw new Error('Please fill in all required fields (name, phone, email)');
         }
 
+        // Validate QR code library
+        if (typeof qrcode !== 'function') {
+            throw new Error('QR code library not properly loaded');
+        }
+
         const vcard = `BEGIN:VCARD
 VERSION:3.0
 FN:${data.name}
@@ -98,20 +103,37 @@ TEL:${data.phone}
 EMAIL:${data.email}${data.linkedin ? `\nURL:${data.linkedin}` : ''}
 END:VCARD`;
 
-        // Create QR Code
+        // Create QR Code with error correction level M (15%)
         const qr = qrcode(0, 'M');
         qr.addData(vcard);
         qr.make();
         
-        // Display QR Code
+        // Get and clear QR code container
         const qrcodeElement = document.getElementById('qrcode');
-        qrcodeElement.innerHTML = qr.createImgTag(5);
+        if (!qrcodeElement) {
+            throw new Error('QR code container element not found');
+        }
+        qrcodeElement.innerHTML = '';
+        
+        // Create and append QR code image
+        const qrImage = qr.createImgTag(5);
+        qrcodeElement.innerHTML = qrImage;
+        
+        // Verify QR code was created
+        if (!qrcodeElement.querySelector('img')) {
+            throw new Error('Failed to create QR code image');
+        }
         
         return true;
     } catch (error) {
         console.error('QR code generation failed:', error);
         if (typeof Sentry !== 'undefined') {
             Sentry.captureException(error);
+        }
+        // Show user-friendly error
+        const qrcodeElement = document.getElementById('qrcode');
+        if (qrcodeElement) {
+            qrcodeElement.innerHTML = `<div class="error-message">Failed to generate QR code. Please try again.</div>`;
         }
         throw error;
     }
@@ -325,7 +347,11 @@ document.getElementById('vcardForm').addEventListener('submit', debounce(async f
         if (typeof Sentry !== 'undefined') {
             Sentry.captureException(error);
         }
-        alert(`Error saving profile: ${error.message}`);
+        // Show more specific error message
+        const errorMessage = error.message.includes('QR code') 
+            ? error.message 
+            : `Error saving profile: ${error.message}`;
+        alert(errorMessage);
         return;
     } finally {
         submitButton.disabled = false;
