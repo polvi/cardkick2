@@ -74,9 +74,7 @@ function checkSavedData() {
         // Generate QR code with proper error handling
         generateQRCode(profileData).catch(error => {
             console.error('Failed to generate QR code:', error);
-            if (typeof Sentry !== 'undefined') {
-                Sentry.captureException(error);
-            }
+            window.safeSentry.captureException(error);
         });
     } else {
         document.getElementById('formSection').style.display = 'block';
@@ -110,9 +108,7 @@ END:VCARD`;
         return true;
     } catch (error) {
         console.error('QR code generation failed:', error);
-        if (typeof Sentry !== 'undefined') {
-            Sentry.captureException(error);
-        }
+        window.safeSentry.captureException(error);
         throw error;
     }
 }
@@ -305,9 +301,7 @@ document.getElementById('vcardForm').addEventListener('submit', debounce(async f
         setTimeout(() => URL.revokeObjectURL(manifestURL), 1000);
     } catch (error) {
         console.error('Failed to update manifest:', error);
-        if (typeof Sentry !== 'undefined') {
-            Sentry.captureException(error);
-        }
+        window.safeSentry.captureException(error);
     }
     
     // Hide SEO content after saving data
@@ -390,9 +384,7 @@ if (removePhotoButton && photoPreview && photoInput) {
             }
         } catch (error) {
             console.error('Error removing photo:', error);
-            if (typeof Sentry !== 'undefined') {
-                Sentry.captureException(error);
-            }
+            window.safeSentry.captureException(error);
         }
     });
 }
