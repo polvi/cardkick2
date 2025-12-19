@@ -19,19 +19,14 @@ async function registerServiceWorker(retryCount = 0) {
             await existingReg.unregister();
         }
 
-        // Determine correct scope based on deployment path
-        const scope = new URL('./', window.location.href).pathname;
-        
-        // Get the base path from the current URL
-        const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+        // Get the base path that includes the repository name if on GitHub Pages
+        const basePath = new URL('./', window.location.href).pathname;
         
         // Register new service worker with correct path
-        const registration = await navigator.serviceWorker.register(
-            new URL('sw.js', window.location.origin + basePath).href,
-            {
-                scope: basePath,
-                updateViaCache: 'none'
-            }
+        const registration = await navigator.serviceWorker.register('sw.js', {
+            scope: basePath,
+            updateViaCache: 'none'
+        }
         );
 
         // Handle updates

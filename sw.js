@@ -15,11 +15,17 @@ self.addEventListener('install', event => {
     event.waitUntil(
         (async () => {
             const cache = await caches.open(CACHE_NAME);
+            // Get the base URL from the registration
             const baseUrl = self.registration.scope;
             
-            // Add base URL to relative paths
+            // Add base URL to relative paths, handling GitHub Pages paths
             const urlsToCache = ASSETS.map(path => {
-                return path.startsWith('http') ? path : new URL(path, baseUrl).href;
+                if (path.startsWith('http')) {
+                    return path;
+                }
+                // Remove any leading slash to avoid double slashes
+                const cleanPath = path.replace(/^\//, '');
+                return new URL(cleanPath, baseUrl).href;
             });
             
             // Cache all assets
