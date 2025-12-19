@@ -1,27 +1,38 @@
 // Initialize Sentry when loaded
 window.sentryOnLoad = function() {
-  if (typeof Sentry !== 'undefined') {
-    Sentry.init({
-      enableInternalErrorTracking: true,
-      debug: false,
-      tracesSampleRate: 1.0,
-      replaysOnErrorSampleRate: 1.0
-    });
-
-    window.addEventListener('unhandledrejection', function(event) {
-      Sentry.captureException(event.reason);
-    });
-
-    Sentry.lazyLoadIntegration("feedbackIntegration")
-      .then((feedbackIntegration) => {
-        Sentry.addIntegration(feedbackIntegration({
-          autoInject: true,
-          isEmailRequired: false
-        }));
-      })
-      .catch((error) => {
-        console.warn('Failed to load Sentry feedback integration:', error);
+  try {
+    if (typeof Sentry !== 'undefined') {
+      Sentry.init({
+        enableInternalErrorTracking: true,
+        debug: false,
+        tracesSampleRate: 1.0,
+        replaysOnErrorSampleRate: 1.0,
+        initialScope: {
+          tags: {
+            environment: 'production'
+          }
+        }
       });
+
+      window.addEventListener('unhandledrejection', function(event) {
+        Sentry.captureException(event.reason);
+      });
+
+      // Load feedback integration with proper scope
+      Sentry.lazyLoadIntegration("feedbackIntegration")
+        .then((feedbackIntegration) => {
+          const integration = new feedbackIntegration({
+            autoInject: true,
+            isEmailRequired: false
+          });
+          Sentry.addIntegration(integration);
+        })
+        .catch((error) => {
+          console.warn('Failed to load Sentry feedback integration:', error);
+        });
+    }
+  } catch (error) {
+    console.error('Error initializing Sentry:', error);
   }
 };
 
