@@ -7,11 +7,22 @@ window.sentryOnLoad = function() {
         debug: false,
         tracesSampleRate: 1.0,
         replaysOnErrorSampleRate: 1.0,
+        beforeSend(event) {
+          // Ensure we're not collecting any personal data
+          if (event.user) delete event.user;
+          return event;
+        },
         initialScope: {
           tags: {
-            environment: 'production'
+            environment: 'production',
+            app: 'cardkick'
           }
         }
+      });
+
+      // Configure global scope
+      Sentry.configureScope(scope => {
+        scope.setTag("app_version", "2.0.0");
       });
 
       window.addEventListener('unhandledrejection', function(event) {
